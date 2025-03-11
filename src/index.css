@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --color-toska: #20D2AE;
+  --color-hijo: #B0FC44;
+  --color-oren: #FF8702;
+}
+
 body {
   @apply font-sans
 }
-

@@ -6,7 +6,7 @@ function App() {
       <div className="bg-white">
         {/* Navbar */}
         <nav className="flex justify-between items-center px-12 py-6 shadow-md">
-          <h1 className="text-2xl font-bold text-green-600">Naturo</h1>
+          <h1 className="text-2xl font-bold text-toska">Naturo</h1>
           <ul className="hidden md:flex space-x-6 text-gray-700">
             <li className="hover:text-green-600 cursor-pointer">Home</li>
             <li className="hover:text-green-600 cursor-pointer">Plant Care</li>
