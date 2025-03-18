@@ -9,9 +9,5 @@
 
 body {
   @apply font-sans;
-  @apply bg-toska;
-}
-
-.navActive {
-  @apply bg-toska;
+  /* @apply bg-toska; */
 }
