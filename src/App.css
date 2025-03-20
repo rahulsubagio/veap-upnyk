@@ -5,4 +5,9 @@
   --color-toska: #20D2AE;
   --color-hijo: #B0FC44;
   --color-oren: #FF8702;
+  --color-bgjo: #E6FFF0;
+}
+
+body {
+  @apply text-gray-700;
 }
