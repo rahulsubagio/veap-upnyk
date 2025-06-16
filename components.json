@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@veap/components",
+    "utils": "@veap/lib/utils",
+    "ui": "@veap/components/ui",
+    "lib": "@veap/lib",
+    "hooks": "@veap/hooks"
+  },
+  "iconLibrary": "lucide"
+}

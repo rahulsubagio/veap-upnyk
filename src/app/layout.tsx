@@ -1,5 +1,20 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
+import { Inter, Poppins } from 'next/font/google';
+// import { AOSInitializer } from "@veap/components/AOSInitializer";
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['600', '700'],
+  variable: '--font-poppins',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: "Green Pyramid",
@@ -15,9 +30,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="id" className={`${poppins.variable} ${inter.variable} scroll-smooth`}>
       <body>
-        {/* Header */}
+        {/* <AOSInitializer /> */}
         {children}
       </body>
     </html>
