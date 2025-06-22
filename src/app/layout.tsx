@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "Green Pyramid",
   description: "Grow Smarter. Grow More.",
   icons: {
-    icon: '/images/logo-gp-round.png'
+    icon: '/images/TEAM.png'
   },
 };
 
