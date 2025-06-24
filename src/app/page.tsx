@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { 
-  LogIn, Menu, Leaf, FlaskConical, BookOpen, ArrowBigRightDash,
-  BarChart2, MapPin, Clock, Mail, Instagram, Youtube, Facebook 
+  Menu, Leaf, FlaskConical, BookOpen, ArrowBigRightDash,
+  BarChart2, MapPin, Clock, Mail, Instagram, Youtube, Facebook, LayoutGrid 
 } from 'lucide-react';
 import { TextAnimate } from "@veap/components/magicui/text-animate";
 import Link from 'next/link';
@@ -13,48 +13,48 @@ import Link from 'next/link';
 const navLinks = [
   { href: "#tentang", label: "About" },
   { href: "#koleksi", label: "Collection" },
-  { href: "#iot", label: "Dashboard IoT" },
+  { href: "#iot", label: "IoT Dashboard" },
   { href: "#kunjungan", label: "Visit" },
 ];
 
 const featureCards = [
   {
     icon: <Leaf className="w-10 h-10 text-blue-500" />,
-    title: "Konservasi",
-    description: "Melestarikan spesies tanaman langka dan lokal sebagai bagian dari kekayaan hayati Indonesia.",
+    title: "Conservation",
+    description: "Preserving rare and local plant species as part of Indonesia's biodiversity heritage.",
   },
   {
     icon: <FlaskConical className="w-10 h-10 text-blue-500" />,
-    title: "Riset Inovatif",
-    description: "Fasilitas modern untuk penelitian di bidang bioteknologi, pertanian presisi, dan hortikultura.",
+    title: "Innovative Research",
+    description: "Modern facilities for research in biotechnology, precision agriculture, and horticulture.",
   },
   {
     icon: <BookOpen className="w-10 h-10 text-blue-500" />,
-    title: "Edukasi",
-    description: "Menjadi sumber belajar interaktif bagi seluruh civitas akademika dan masyarakat umum.",
+    title: "Education",
+    description: "An interactive learning resource for students, academics, and the general public.",
   },
 ];
 
 const plantCollections = [
   {
     imgSrc: "/images/tanaman-hias.jpg",
-    title: "Anggrek & Tanaman Hias",
-    description: "Koleksi anggrek bulan, vanda, dan berbagai tanaman hias eksotis yang mempesona.",
+    title: "Orchids & Ornamental Plants",
+    description: "A stunning collection of monthly orchids, Vanda, and exotic ornamental plants with unique beauty.",
   },
   {
     imgSrc: "/images/kaktus.jpg",
-    title: "Kaktus & Sukulen",
-    description: "Adaptasi luar biasa dari tanaman gurun dalam berbagai bentuk dan ukuran yang unik.",
+    title: "Cacti & Succulents",
+    description: "Extraordinary adaptation of desert plants, with various shapes and sizes, adding charm to your collection.",
   },
   {
     imgSrc: "/images/tanaman-herbal.jpg",
-    title: "Tanaman Obat & Herbal",
-    description: "Jelajahi apotek hidup kami yang kaya akan manfaat bagi kesehatan dan pengobatan tradisional.",
+    title: "Medicinal & Herbal Plants",
+    description: "Explore our living pharmacy, rich in plants that offer health benefits and support traditional healing.",
   },
   {
     imgSrc: "/images/hidroponik.jpg",
-    title: "Pangan & Hidroponik",
-    description: "Inovasi pertanian perkotaan untuk mendukung ketahanan pangan masa depan.",
+    title: "Hydroponics",
+    description: "Urban farming innovations to support the sustainability and resilience of future food sources.",
   },
 ];
 
@@ -81,8 +81,6 @@ const Header = ({ activeSection }: { activeSection: string }) => {
       <div className="container md:px-20 mx-auto px-6 py-4 flex justify-between items-center">
         <a href="#" className="text-2xl font-bold flex items-center gap-2">
           <Image src="/images/TEAM.png" alt="logo green pyramid" width={100} height={50} />
-          {/* <h1 className="text-teal-500">Green</h1>
-          <h1 className="text-lime-400">Pyramid</h1> */}
         </a>
         <nav className="hidden lg:flex items-center space-x-8">
           {navLinks.map((link) => (
@@ -99,24 +97,24 @@ const Header = ({ activeSection }: { activeSection: string }) => {
           ))}
         </nav>
         <div className="flex items-center gap-4">
-          <a href="#login" className="hidden lg:flex bg-blue-900 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-800 transition duration-300 shadow-md items-center gap-2">
-            <LogIn className="w-4 h-4" />
-            <span>Login</span>
+          <a href="/dashboard" id="portal" className="hidden lg:flex bg-blue-900 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-800 transition duration-300 shadow-md items-center gap-2">
+            <BarChart2 className="w-5 h-5" />
+            <span>Access IoT Dashboard</span>
           </a>
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 rounded-md text-gray-700 hover:bg-gray-200">
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 rounded-md text-gray-700 hover:bg-blue-200">
             <Menu className="w-6 h-6" />
           </button>
         </div>
       </div>
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden px-6 pb-4">
+        <div className="lg:hidden md:px-20 px-6 pb-4">
           {navLinks.map((link) => (
             <a key={link.href} href={link.href} className="block py-2 text-gray-600 hover:text-blue-900" onClick={() => setIsMenuOpen(false)}>{link.label}</a>
           ))}
-          <a href="#login" className="lg:hidden flex bg-blue-900 text-white px-5 py-2.5 my-2 rounded-lg font-semibold hover:bg-blue-800 transition duration-300 shadow-md items-center gap-2">
-            <LogIn className="w-4 h-4" />
-            <span>Login</span>
+          <a href="/dashboard" id="portal" className="lg:hidden flex bg-blue-900 text-white px-5 py-2.5 my-2 rounded-lg font-semibold hover:bg-blue-800 transition duration-300 shadow-md items-center gap-2">
+            <BarChart2 className="w-5 h-5" />
+            <span>Access IoT Dashboard</span>
           </a>
         </div>
       )}
@@ -203,7 +201,7 @@ export default function Home() {
         <section id='tentang' className='py-20'>
           <div className='container md:px-28 mx-auto px-6'>
             <div className='text-center mb-12'>
-              <h2 className='text-3xl md:text-4xl font-bold text-gray-800'>Laboratorium Hidup untuk Masa Depan Hijau</h2>
+              <h2 className='text-3xl md:text-4xl font-bold text-gray-800'>Living Laboratory for a Green Future</h2>
               <p className='mt-4 max-w-2xl mx-auto text-gray-600'>VEAP are dedicated to fostering a sustainable and innovative agricultural ecosystem that serves both as an educational hub and a demonstration of precision farming.</p>
             </div>
             <div className='grid md:grid-cols-3 gap-5 text-center'>
@@ -226,8 +224,8 @@ export default function Home() {
         <section id='koleksi' className='py-20 bg-gray-100'>
           <div className='container md:px-28 mx-auto px-6'>
             <div className='text-center mb-12'>
-              <h2 className='text-3xl md:text-4xl font-bold text-gray-800'>Temukan Kekayaan Flora Kami</h2>
-              <p className='mt-4 max-w-2xl mx-auto text-gray-600'>Jelajahi beragam kategori tanaman yang kami rawat dan teliti di Green Pyramid.</p>
+              <h2 className='text-3xl md:text-4xl font-bold text-gray-800'>Explore Our Rich Flora Collection</h2>
+              <p className='mt-4 max-w-2xl mx-auto text-gray-600'>Discover the diverse categories of plants that we nurture and research at VEAP.</p>
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8' data-aos="zoom-in-up">
               {plantCollections.map((collection, index) => 
@@ -250,11 +248,11 @@ export default function Home() {
           <div className='container md:px-28 mx-auto px-6'>
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="text-center md:text-left" data-aos="fade-right">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-800">Pantau Pertumbuhan Secara Real-Time</h2>
-                <p className="mt-4 text-gray-600">Akses dashboard IoT kami untuk memonitor data vital seperti suhu, kelembapan, cahaya, dan nutrisi secara langsung dari mana saja.</p>
-                <Link href="/dashboard/smartdec" id="login" className="mt-8 mx-auto md:mx-0 bg-blue-900 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 transition duration-300 shadow-lg flex items-center gap-2 w-fit">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-800">Monitor Growth in Real-Time</h2>
+                <p className="mt-4 text-gray-600">Access our IoT Dashboard to monitor vital data such as temperature, humidity, light, and nutrients in real-time, from anywhere.</p>
+                <Link href="/dashboard" id="portal" className="mt-8 mx-auto md:mx-0 bg-blue-900 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 transition duration-300 shadow-lg flex items-center gap-2 w-fit">
                     <BarChart2 className="w-5 h-5" />
-                    Akses Dashboard IoT
+                    Access IoT Dashboard
                 </Link>
               </div>
               <div data-aos="fade-left">
@@ -269,28 +267,27 @@ export default function Home() {
         {/* Visit Section */}
         <section id='kunjungan' className='py-20 bg-gray-100'>
           <div className="container md:px-28 mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">Tertarik Berkunjung?</h2>
-            <p className="mt-4 max-w-2xl mx-auto text-gray-600">Kami terbuka untuk kunjungan edukatif. Lihat lokasi dan jam operasional kami di bawah ini.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">Interested in Visiting?</h2>
+            <p className="mt-4 max-w-2xl mx-auto text-gray-600">We are open for educational visits! Check out our location and operational hours below.</p>
             <div className="mt-12 grid md:grid-cols-3 gap-8 text-left">
               <div className="bg-white p-6 rounded-lg shadow-md" data-aos="flip-down">
                 <MapPin className="w-8 h-8 text-blue-500 mb-3" />
-                <h4 className="font-semibold text-lg">Lokasi</h4>
-                <p className="text-gray-600">Green House Pyramid, Kampus 1 UPN Veteran Yogyakarta</p>
+                <h4 className="font-semibold text-lg">Location</h4>
+                <p className="text-gray-600">Campus 1, UPN Veteran Yogyakarta</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md" data-aos="flip-down">
                 <Clock className="w-8 h-8 text-blue-500 mb-3" />
-                <h4 className="font-semibold text-lg">Jam Buka</h4>
-                <p className="text-gray-600">Senin - Jumat (09:00 - 15:00)<br />Terbuka untuk umum (dengan reservasi)</p>
+                <h4 className="font-semibold text-lg">Opening Hours</h4>
+                <p className="text-gray-600">Monday - Friday (09:00 - 15:00)<br />Open to the public (with prior reservation)</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md" data-aos="flip-down">
                 <Mail className="w-8 h-8 text-blue-500 mb-3" />
-                <h4 className="font-semibold text-lg">Kontak</h4>
-                <p className="text-gray-600">Untuk riset & kolaborasi:<br /><a href="https://api.whatsapp.com/send?phone=6281575777564" className="text-blue-500 hover:underline">+62 815-7577-7564</a></p>
+                <h4 className="font-semibold text-lg">Contact</h4>
+                <p className="text-gray-600">For research and collaborations:<br /><a href="https://api.whatsapp.com/send?phone=6281575777564" className="text-blue-500 hover:underline">+62 815-7577-7564</a></p>
               </div>
             </div>
             <div className="mt-12 rounded-lg overflow-hidden shadow-xl" data-aos="fade-up">
               <iframe 
-                // src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.241723184949!2d106.83271297500251!3d-6.362768593628285!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ec18d7667237%3A0x1392b45f4e38c71!2sUniversitas%20Indonesia!5e0!3m2!1sen!2sid!4v1718451834927!5m2!1sen!2sid" 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15813.039808560325!2d110.39125435541989!3d-7.762232499999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a599a0272fccd%3A0x39e7804d39e1d0a!2sUniversitas%20Pembangunan%20Nasional%20Veteran%20Yogyakarta!5e0!3m2!1sid!2sid!4v1750016585528!5m2!1sid!2sid" 
                 width="100%" 
                 height="450" 
@@ -308,19 +305,20 @@ export default function Home() {
           <div className="container md:px-28 mx-auto px-6 py-12">
             <div className="grid md:grid-cols-3 gap-8">
               <div>
-                  <h3 className="text-xl font-semibold">Green Pyramid</h3>
-                  <p className="mt-2 text-gray-400">Inovasi, Konservasi, dan Edukasi.</p>
+                  <h3 className="text-xl font-semibold">Veteran Edu Agro Park</h3>
+                  <p className="mt-2 text-gray-400">Innovating, Conserving, and Educating.</p>
               </div>
               <div>
-                <h4 className="text-lg font-semibold">Navigasi</h4>
-                <ul className="mt-4 space-y-2">
+                <h4 className="text-lg font-semibold">Navigation</h4>
+                <ul className="mt-2 space-y-2">
                   {navLinks.map((link) => (
                       <li key={link.href}><a href={link.href} className="text-gray-400 hover:text-white">{link.label}</a></li>
                   ))}
                 </ul>
               </div>
               <div>
-                <h4 className="text-lg font-semibold">Terhubung Dengan Kami</h4>
+                <h4 className="text-lg font-semibold">Stay Connected with Us</h4>
+                <p className='mt-2 text-gray-400'>Follow us on social media to stay updated!</p>
                 <div className="flex space-x-4 mt-4">
                   <a href="#" aria-label="Instagram" className="text-gray-400 hover:text-white"><Instagram className="w-6 h-6" /></a>
                   <a href="#" aria-label="YouTube" className="text-gray-400 hover:text-white"><Youtube className="w-6 h-6" /></a>
@@ -329,10 +327,24 @@ export default function Home() {
               </div>
             </div>
             <div className="mt-12 border-t border-gray-700 pt-8 text-center text-gray-500">
-              <p>&copy; {new Date().getFullYear()} Green Pyramid | UPN Veteran Yogyakarta. All Rights Reserved.</p>
+              <p>&copy; {new Date().getFullYear()} VEAP | Veteran Education Agro Park <br />All Rights Reserved</p>
             </div>
           </div>
         </footer>
+        <div className="group fixed bottom-8 right-8 z-50">
+          <Link 
+            href="/dashboard" 
+            title="Go to Dashboard Portal"
+            className="bg-blue-900 text-white p-4 rounded-full shadow-lg group-hover:bg-blue-800 transition-all duration-300 group-hover:scale-110 flex items-center justify-center"
+          >
+            <LayoutGrid className="w-6 h-6" />
+          </Link>
+          <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <div className="bg-gray-700 text-white text-sm rounded-md shadow-lg px-3 py-1.5 whitespace-nowrap">
+              Access IoT Dashboard
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );

@@ -17,7 +17,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Green Pyramid",
+  title: "Veteran Education Agro Park",
   description: "Grow Smarter. Grow More.",
   icons: {
     icon: '/images/TEAM.png'
