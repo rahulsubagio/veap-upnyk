@@ -1,49 +1,20 @@
-"use client";
-
-import type { NextPage } from 'next';
 import { 
     Sprout, ShieldCheck, Building, ArrowRight, ArrowLeft, Leaf
 } from 'lucide-react';
-import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { createClient } from '@veap/lib/supabase/server'; // Pastikan path ini benar
 
-// Interface untuk tipe data properti kartu proyek/dashboard
+// Interface untuk properti kartu (tetap sama)
 interface ProjectCardProps {
   imageSrc: string;
   icon: React.ReactNode;
   title: string;
   description: string;
-  loginHref: string;
+  href: string; // Menggunakan 'href' yang lebih generik
 }
 
-// Data untuk tiga pilihan dashboard
-const projectData: ProjectCardProps[] = [
-  {
-    imageSrc: "/images/dash-iot.jpg",
-    icon: <Sprout className="h-8 w-8 text-green-700" />,
-    title: "Green Pyramid",
-    description: "University research greenhouse monitoring for tropical plants and conservation.",
-    loginHref: "/login/green-pyramid"
-  },
-  {
-    imageSrc: "/images/dash-iot.jpg",
-    icon: <ShieldCheck className="h-8 w-8 text-blue-700" />,
-    title: "Smartdec",
-    description: "Smart irrigation and nutrient monitoring system for open-field precision agriculture.",
-    loginHref: "/login/smartdec"
-  },
-  {
-    imageSrc: "/images/dash-iot.jpg",
-    icon: <Building className="h-8 w-8 text-purple-700" />,
-    title: "Indoor Hidroponic",
-    description: "Micro-environment control for efficient indoor hydroponic vegetable cultivation.",
-    loginHref: "/login/indoor-hydroponic"
-  },
-];
-
-// Komponen Kartu Proyek yang dapat digunakan kembali
-const ProjectCard: React.FC<ProjectCardProps> = ({ imageSrc, icon, title, description, loginHref }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ imageSrc, icon, title, description, href }) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden group flex flex-col">
       <div className="relative w-full h-48">
@@ -62,19 +33,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ imageSrc, icon, title, descri
           <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
         </div>
         <p className="mt-4 text-gray-600 flex-grow">{description}</p>
-        <a 
-          href={loginHref}
+        <Link 
+          href={href}
           className="mt-6 bg-blue-900 text-white text-center font-semibold py-3 px-6 rounded-lg hover:bg-blue-800 transition-all duration-300 flex items-center justify-center gap-2"
         >
           <span>Access Dashboard</span>
           <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-        </a>
+        </Link>
       </div>
     </div>
   );
 };
 
-// Komponen Header untuk Halaman Portal
+// Komponen Header (tanpa perubahan)
 const PortalHeader: React.FC = () => {
   return (
     <header className="bg-transparent absolute top-0 left-0 right-0 z-10">
@@ -92,28 +63,54 @@ const PortalHeader: React.FC = () => {
   );
 };
 
-// Halaman Utama untuk Pemilihan Dashboard
-const DashboardPortalPage: NextPage = () => {
+// Halaman Utama yang sekarang menjadi Komponen Server async
+export default async function DashboardPortalPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const isLoggedIn = !!user;
+
+  const projectData: ProjectCardProps[] = [
+    {
+      imageSrc: "/images/dash-iot.jpg",
+      icon: <Sprout className="h-8 w-8 text-green-700" />,
+      title: "Green Pyramid",
+      description: "University research greenhouse monitoring for tropical plants and conservation.",
+      href: isLoggedIn ? "/dashboard/green-pyramid" : "/login?dashboard=green-pyramid"
+    },
+    {
+      imageSrc: "/images/dash-iot.jpg",
+      icon: <ShieldCheck className="h-8 w-8 text-blue-700" />,
+      title: "Smartdec",
+      description: "Smart irrigation and nutrient monitoring system for open-field precision agriculture.",
+      href: isLoggedIn ? "/dashboard/smartdec" : "/login?dashboard=smartdec"
+    },
+    {
+      imageSrc: "/images/dash-iot.jpg",
+      icon: <Building className="h-8 w-8 text-purple-700" />,
+      title: "Indoor Hidroponic",
+      description: "Micro-environment control for efficient indoor hydroponic vegetable cultivation.",
+      href: isLoggedIn ? "/dashboard/indoor-hidroponic" : "/login?dashboard=indoor-hidroponic"
+    },
+  ];
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <PortalHeader />
 
       <main className="flex items-center justify-center min-h-screen py-24 px-6">
         <div className="text-center">
-          {/* Welcome Message */}
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
-            Choose Your Dashboard System
-          </h1>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Each system is designed for specific needs. Please select the appropriate dashboard to begin monitoring.
-          </p>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
+                Choose Your Dashboard System
+            </h1>
+            <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                Each system is designed for specific needs. Please select the appropriate dashboard to begin monitoring.
+            </p>
 
-          {/* Project Cards Grid */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {projectData.map((data, index) => (
-              <ProjectCard key={index} {...data} />
-            ))}
-          </div>
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                {projectData.map((data, index) => (
+                    <ProjectCard key={index} {...data} />
+                ))}
+            </div>
         </div>
       </main>
       
@@ -123,5 +120,3 @@ const DashboardPortalPage: NextPage = () => {
     </div>
   );
 };
-
-export default DashboardPortalPage;
