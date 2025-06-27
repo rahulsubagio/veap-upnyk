@@ -5,7 +5,8 @@ import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, ArrowLeft, Leaf } from 'lucide-react';
 import Link from 'next/link';
-import { login } from './actions'
+import { login } from './actions';
+import { AuroraText } from '@veap/components/magicui/aurora-text';
 
 // This component contains the form logic and needs Suspense because of useSearchParams
 function LoginComponent() {
@@ -39,9 +40,9 @@ function LoginComponent() {
   return (
     <div className="w-full p-8 md:p-10">
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Login</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Login</h1>
         <p className="text-gray-600 mt-2">
-          Access the <span className="font-bold text-blue-800">{dashboardTitles[dashboard]}</span> dashboard.
+          Access the <span className="font-bold text-blue-800"><AuroraText>{dashboardTitles[dashboard]}</AuroraText></span> dashboard.
         </p>
         {searchParams.has('message') && (
           <p className="mt-4 p-4 bg-red-100 text-red-700 border border-red-400 text-center rounded-md">
@@ -62,7 +63,7 @@ function LoginComponent() {
         <div className="relative">
           <div className="flex justify-between items-baseline">
             <label htmlFor="password"className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <a href="#" className="text-sm text-blue-800 hover:underline">Forgot password?</a>
+            {/* <a href="#" className="text-sm text-blue-800 hover:underline">Forgot password?</a> */}
           </div>
           <Lock className="absolute left-3 top-10 w-5 h-5 text-gray-400" />
           <input type={passwordVisible ? "text" : "password"} id="password" name="password" placeholder="Enter your password" required className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"/>
@@ -91,7 +92,7 @@ const LoginPage: NextPage = () => {
         <div className="text-center mb-8">
           <Link href="/dashboard" className="inline-flex items-center gap-3">
             <Leaf className="sm:w-10 sm:h-10 w-8 h-8 text-blue-900" />
-            <span className="sm:text-3xl text-2xl font-bold text-gray-800">IoT Dashboard Center</span>
+            <span className="sm:text-3xl text-2xl font-bold text-gray-800">IoT Dashboard <AuroraText>Center</AuroraText></span>
           </Link>
         </div>
         

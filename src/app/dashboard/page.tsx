@@ -1,9 +1,13 @@
 import { 
-    Sprout, ShieldCheck, Building, ArrowRight, ArrowLeft, Leaf
+    Sprout, Briefcase, Building, ArrowRight, ArrowLeft, Leaf
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@veap/lib/supabase/server'; // Pastikan path ini benar
+import { TextAnimate } from '@veap/components/magicui/text-animate';
+import { BlurFade } from '@veap/components/magicui/blur-fade';
+import { AuroraText } from '@veap/components/magicui/aurora-text';
+
 
 // Interface untuk properti kartu (tetap sama)
 interface ProjectCardProps {
@@ -51,8 +55,10 @@ const PortalHeader: React.FC = () => {
     <header className="bg-transparent absolute top-0 left-0 right-0 z-10">
       <div className="container mx-auto md:px-20 px-6 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-            <Leaf className="w-7 h-7 sm:w-8 sm:h-8 text-blue-900" />
-            <span className="text-xl sm:text-2xl font-bold text-gray-800">IoT Dashboard Center</span>
+          <Leaf className="w-7 h-7 sm:w-8 sm:h-8 text-blue-900" />
+          <span className="text-xl sm:text-2xl font-bold text-gray-800">
+            IoT Dashboard <AuroraText>Center</AuroraText>
+          </span>
         </div>
         <Link href="/" className="bg-white text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300 flex items-center gap-2 border border-gray-200 shadow-sm">
           <ArrowLeft className="w-4 h-4" />
@@ -79,7 +85,7 @@ export default async function DashboardPortalPage() {
     },
     {
       imageSrc: "/images/dash-iot.jpg",
-      icon: <ShieldCheck className="h-8 w-8 text-blue-700" />,
+      icon: <Briefcase className="h-8 w-8 text-blue-700" />,
       title: "Smartdec",
       description: "Smart irrigation and nutrient monitoring system for open-field precision agriculture.",
       href: isLoggedIn ? "/dashboard/smartdec" : "/login?dashboard=smartdec"
@@ -99,18 +105,20 @@ export default async function DashboardPortalPage() {
 
       <main className="flex items-center justify-center min-h-screen py-24 px-6">
         <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
-                Choose Your Dashboard System
-            </h1>
-            <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                Each system is designed for specific needs. Please select the appropriate dashboard to begin monitoring.
-            </p>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
+            <TextAnimate animation="blurInUp" by="word" once>Choose Your Dashboard System</TextAnimate>
+          </h1>
+          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+            Each system is designed for specific needs. Please select the appropriate dashboard to begin monitoring.
+          </p>
 
+          <BlurFade direction='up' delay={0.25}>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 {projectData.map((data, index) => (
                     <ProjectCard key={index} {...data} />
                 ))}
             </div>
+          </BlurFade>
         </div>
       </main>
       

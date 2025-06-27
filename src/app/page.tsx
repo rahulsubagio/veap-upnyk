@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { TextAnimate } from "@veap/components/magicui/text-animate";
 import Link from 'next/link';
-// import { Ripple } from "@veap/components/magicui/ripple";
+import { BlurFade } from '@veap/components/magicui/blur-fade';
 
 const navLinks = [
   { href: "#tentang", label: "About" },
@@ -190,7 +190,9 @@ export default function Home() {
                 <Ripple />
               </div> */}
               <div className="relative z-10 transform transition-transform duration-500 hover:scale-105">
-                <Image src="/images/green-house-pyramid-isometric2-removebg-preview.png" width={450} height={450} alt="gambar green house vektor" data-aos="fade-down" className='rounded-b-full' />
+                <BlurFade direction='down' delay={0.25}>
+                  <Image src="/images/green-house-pyramid-isometric2-removebg-preview.png" width={450} height={450} alt="gambar green house vektor" data-aos="fade-down" className='rounded-b-full' />
+                </BlurFade>
               </div>
               <div className="absolute top-10 right-5 text-blue-200 -z-0" style={{ fontSize: '3rem', lineHeight: 0.5 }}>...<br/>...<br/>...<br/>...</div>
             </div>
