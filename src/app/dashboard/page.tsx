@@ -60,7 +60,7 @@ const PortalHeader: React.FC = () => {
             IoT Dashboard <AuroraText>Center</AuroraText>
           </span>
         </div>
-        <Link href="/" className="bg-white text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300 flex items-center gap-2 border border-gray-200 shadow-sm">
+        <Link href="/" className="bg-white text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition duration-300 flex items-center gap-2 border border-gray-200 shadow-sm">
           <ArrowLeft className="w-4 h-4" />
           <span className='hidden md:inline'>Back to Main Site</span>
         </Link>

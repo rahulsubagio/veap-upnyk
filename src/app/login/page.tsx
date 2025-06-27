@@ -3,17 +3,29 @@
 import type { NextPage } from 'next';
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Mail, Lock, Eye, EyeOff, ArrowLeft, Leaf } from 'lucide-react';
+import { useFormStatus } from 'react-dom';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, Leaf, LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
 import { login } from './actions';
 import { AuroraText } from '@veap/components/magicui/aurora-text';
 
-// This component contains the form logic and needs Suspense because of useSearchParams
+function LoginButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button 
+      type='submit' 
+      disabled={pending}
+      className="w-full bg-blue-900 text-white font-bold py-3 px-4 rounded-lg flex justify-center items-center gap-2 hover:bg-blue-800 disabled:bg-blue-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
+    >
+      {pending && <LoaderCircle className="animate-spin" />}
+      {pending ? 'Logging in...' : 'Login'}
+    </button>
+  );
+}
+
 function LoginComponent() {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
-  // const [loading, setLoading] = useState(false);
-
   const searchParams = useSearchParams();
   // Get the dashboard name from the URL query parameter
   const dashboard = searchParams.get('dashboard') || '';
@@ -73,9 +85,7 @@ function LoginComponent() {
         </div>
         
         <div>
-          <button type='submit' className="w-full bg-blue-900 text-white font-bold py-3 px-4 rounded-lg flex justify-center items-center gap-2 hover:bg-blue-800 disabled:bg-blue-400 transition-all duration-300 transform hover:scale-105">
-            Login
-          </button>
+          <LoginButton />
         </div>
       </form>
     </div>
