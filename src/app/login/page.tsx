@@ -100,7 +100,7 @@ const LoginPage: NextPage = () => {
           
         {/* Header Logo and Title */}
         <div className="text-center mb-8">
-          <Link href="/dashboard" className="inline-flex items-center gap-3">
+          <Link href="/dashboard" className="inline-flex items-center gap-2">
             <Leaf className="sm:w-10 sm:h-10 w-8 h-8 text-blue-900" />
             <span className="sm:text-3xl text-2xl font-bold text-gray-800">IoT Dashboard <AuroraText>Center</AuroraText></span>
           </Link>

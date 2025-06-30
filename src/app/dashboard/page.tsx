@@ -3,19 +3,18 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { createClient } from '@veap/lib/supabase/server'; // Pastikan path ini benar
+import { createClient } from '@veap/lib/supabase/server'; 
 import { TextAnimate } from '@veap/components/magicui/text-animate';
 import { BlurFade } from '@veap/components/magicui/blur-fade';
 import { AuroraText } from '@veap/components/magicui/aurora-text';
 
 
-// Interface untuk properti kartu (tetap sama)
 interface ProjectCardProps {
   imageSrc: string;
   icon: React.ReactNode;
   title: string;
   description: string;
-  href: string; // Menggunakan 'href' yang lebih generik
+  href: string;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ imageSrc, icon, title, description, href }) => {
@@ -49,13 +48,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ imageSrc, icon, title, descri
   );
 };
 
-// Komponen Header (tanpa perubahan)
 const PortalHeader: React.FC = () => {
   return (
     <header className="bg-transparent absolute top-0 left-0 right-0 z-10">
       <div className="container mx-auto md:px-20 px-6 py-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Leaf className="w-7 h-7 sm:w-8 sm:h-8 text-blue-900" />
+        <div className="flex items-center gap-2">
+          <Leaf className="w-6 h-6 sm:w-8 sm:h-8 text-blue-900" />
           <span className="text-xl sm:text-2xl font-bold text-gray-800">
             IoT Dashboard <AuroraText>Center</AuroraText>
           </span>
@@ -69,10 +67,15 @@ const PortalHeader: React.FC = () => {
   );
 };
 
-// Halaman Utama yang sekarang menjadi Komponen Server async
 export default async function DashboardPortalPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch (e) {
+    console.error('Session check failed:', e);
+  }
   const isLoggedIn = !!user;
 
   const projectData: ProjectCardProps[] = [
