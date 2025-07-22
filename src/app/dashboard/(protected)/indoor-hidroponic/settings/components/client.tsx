@@ -173,7 +173,7 @@ const SettingsClient = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Penjadwalan Waktu Aktif</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Jadwal Pagi/Siang</label>
+                        <label className="block text-sm font-medium text-gray-700">Jadwal Pagi</label>
                         <div className="flex items-center space-x-2">
                             <input type="time" value={morningStartTime} onChange={e => setMorningStartTime(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"/>
                             <span className="text-gray-500">-</span>
@@ -181,7 +181,7 @@ const SettingsClient = () => {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Jadwal Sore/Malam</label>
+                        <label className="block text-sm font-medium text-gray-700">Jadwal Sore</label>
                         <div className="flex items-center space-x-2">
                             <input type="time" value={afternoonStartTime} onChange={e => setAfternoonStartTime(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"/>
                             <span className="text-gray-500">-</span>
