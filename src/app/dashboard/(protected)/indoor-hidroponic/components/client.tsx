@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react'; // Tambahkan useRef
+import { useState, useEffect, useRef } from 'react';
 import mqtt from 'mqtt';
 import { Thermometer, Droplets, FlaskConical, Zap, Power, Bot, User, RefreshCw, ChevronsUp, ChevronsDown, Waves } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
@@ -48,10 +48,22 @@ type ChartDataState = {
   humidity: (number | null)[];
 };
 
-const MAX_CHART_POINTS = 20; // Jumlah data point maksimum di chart
+const MAX_CHART_POINTS = 20;
 
 const initialSensorData: SensorData = { ec: null, tds: null, ph: null, water_temp: null, room_temp: null, humidity: null };
 const initialChartData: ChartDataState = { labels: [], ec: [], tds: [], ph: [], water_temp: [], room_temp: [], humidity: [] };
+
+// PERBAIKAN: Pindahkan konstanta ke luar komponen
+const SENSOR_DATA_TOPIC = 'indoorHidroponic/sensors/data';
+const MODE_STATUS_TOPIC = 'indoorHidroponic/control/mode/status';
+const MODE_COMMAND_TOPIC = 'indoorHidroponic/control/mode/command';
+
+const actuatorTopics = {
+  nutrisi: { command: 'indoorHidroponic/actuator/nutrisi/command', status: 'indoorHidroponic/actuator/nutrisi/status' },
+  phUp: { command: 'indoorHidroponic/actuator/phUp/command', status: 'indoorHidroponic/actuator/phUp/status' },
+  phDown: { command: 'indoorHidroponic/actuator/phDown/command', status: 'indoorHidroponic/actuator/phDown/status' },
+  pump: { command: 'indoorHidroponic/actuator/pump/command', status: 'indoorHidroponic/actuator/pump/status' },
+};
 
 const DashboardClient = () => {
   // --- State Aplikasi ---
@@ -64,20 +76,7 @@ const DashboardClient = () => {
   const [controlMode, setControlMode] = useState<ControlMode>('manual');
   const [chartData, setChartData] = useState<ChartDataState>(initialChartData);
 
-  // PERUBAHAN: Tambahkan ref untuk menyimpan ID timeout
   const dataTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // --- Topik MQTT ---
-  const SENSOR_DATA_TOPIC = 'indoorHidroponic/sensors/data';
-  const MODE_STATUS_TOPIC = 'indoorHidroponic/control/mode/status';
-  const MODE_COMMAND_TOPIC = 'indoorHidroponic/control/mode/command';
-  
-  const actuatorTopics = {
-    nutrisi: { command: 'indoorHidroponic/actuator/nutrisi/command', status: 'indoorHidroponic/actuator/nutrisi/status' },
-    phUp: { command: 'indoorHidroponic/actuator/phUp/command', status: 'indoorHidroponic/actuator/phUp/status' },
-    phDown: { command: 'indoorHidroponic/actuator/phDown/command', status: 'indoorHidroponic/actuator/phDown/status' },
-    pump: { command: 'indoorHidroponic/actuator/pump/command', status: 'indoorHidroponic/actuator/pump/status' },
-  };
 
   // --- Efek untuk Koneksi MQTT ---
   useEffect(() => {
@@ -89,7 +88,7 @@ const DashboardClient = () => {
     const mqttClient = mqtt.connect(brokerUrl, options);
     setClient(mqttClient);
 
-    mqttClient.on('connect', () => {
+    const onConnect = () => {
       console.log('Terhubung ke broker MQTT!');
       
       mqttClient.subscribe(SENSOR_DATA_TOPIC, (err: Error | null) => !err && console.log(`Subscribed ke ${SENSOR_DATA_TOPIC}`));
@@ -97,13 +96,12 @@ const DashboardClient = () => {
       Object.values(actuatorTopics).forEach(topic => {
         mqttClient.subscribe(topic.status, (err: Error | null) => !err && console.log(`Subscribed ke ${topic.status}`));
       });
-    });
+    };
 
-    mqttClient.on('message', (topic: string, message: Buffer) => {
+    const onMessage = (topic: string, message: Buffer) => {
       const payload = message.toString();
       
       if (topic === SENSOR_DATA_TOPIC) {
-        // PERUBAHAN: Hapus timeout lama dan set yang baru
         if (dataTimeoutRef.current) {
           clearTimeout(dataTimeoutRef.current);
         }
@@ -111,12 +109,11 @@ const DashboardClient = () => {
           console.warn("Tidak ada data sensor diterima selama 5 detik. Mereset tampilan.");
           setSensorData(initialSensorData);
           setChartData(initialChartData);
-        }, 3000); // Set timeout 3 detik
+        }, 3000);
 
         try {
           const data: SensorData = JSON.parse(payload);
           setSensorData(data);
-          // Update data chart
           setChartData(prevData => {
             const now = new Date();
             const newLabel = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
@@ -146,24 +143,31 @@ const DashboardClient = () => {
       } else if (topic === actuatorTopics.pump.status) {
         setPompaSirkulasiStatus(payload === 'ON');
       }
-    });
+    };
 
-    mqttClient.on('error', (err: Error) => console.error('Koneksi MQTT Error: ', err));
+    const onError = (err: Error) => console.error('Koneksi MQTT Error: ', err);
     
-    mqttClient.on('close', () => {
+    const onClose = () => {
       setSensorData(initialSensorData);
       setChartData(initialChartData);
-      // PERUBAHAN: Hapus timeout saat koneksi benar-benar ditutup
       if (dataTimeoutRef.current) {
         clearTimeout(dataTimeoutRef.current);
       }
-    });
+    };
+
+    mqttClient.on('connect', onConnect);
+    mqttClient.on('message', onMessage);
+    mqttClient.on('error', onError);
+    mqttClient.on('close', onClose);
 
     return () => {
       if (dataTimeoutRef.current) {
         clearTimeout(dataTimeoutRef.current);
       }
-      if (mqttClient) mqttClient.end();
+      if (mqttClient) {
+        mqttClient.removeAllListeners();
+        mqttClient.end();
+      }
     };
   }, []);
 
@@ -194,26 +198,26 @@ const DashboardClient = () => {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'top', labels: { color: '#475569' } }, // slate-600
-      title: { display: true, color: '#1e293b', font: { size: 16 } }, // slate-800
+      legend: { position: 'top', labels: { color: '#475569' } },
+      title: { display: true, color: '#1e293b', font: { size: 16 } },
     },
     scales: {
-      x: { ticks: { color: '#64748b' }, grid: { color: '#e2e8f0' } }, // slate-500, slate-200
-      y: { ticks: { color: '#64748b' }, grid: { color: '#e2e8f0' } }, // slate-500, slate-200
+      x: { ticks: { color: '#64748b' }, grid: { color: '#e2e8f0' } },
+      y: { ticks: { color: '#64748b' }, grid: { color: '#e2e8f0' } },
     },
   };
 
   return (
     <>
-      <div className="my-6 flex justify-end items-center">
+      <div className="mb-6 flex justify-end items-center">
         <button onClick={handleModeChange} className="flex items-center justify-center space-x-3 px-4 py-2 rounded-lg text-sm font-semibold transition-colors bg-gray-200 hover:bg-gray-300 text-gray-800">
-          {controlMode === 'auto' ? <Bot className="text-cyan-600"/> : <User className="text-green-600"/>}
-          <span>Mode: <span className="font-bold uppercase">{controlMode}</span></span>
+            {controlMode === 'auto' ? <Bot className="text-cyan-600"/> : <User className="text-green-600"/>}
+            <span>Mode: <span className="font-bold uppercase">{controlMode}</span></span>
         </button>
       </div>
 
       {/* Grid untuk Sensor */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
         <SensorCard icon={FlaskConical} label="pH Air" value={sensorData.ph?.toFixed(2) ?? '...'} unit="" color="text-green-500" />
         <SensorCard icon={Thermometer} label="Suhu Air" value={sensorData.water_temp?.toFixed(1) ?? '...'} unit="°C" color="text-blue-500" />
         <SensorCard icon={Waves} label="TDS" value={sensorData.tds?.toFixed(0) ?? '...'} unit="ppm" color="text-purple-500" />
@@ -224,14 +228,14 @@ const DashboardClient = () => {
 
       {/* Grid untuk Kontrol */}
       <div className={`bg-white p-6 mb-6 rounded-lg shadow-md transition-opacity ${!isManualMode ? 'opacity-60 cursor-not-allowed' : ''}`}>
-          <h3 className="text-xl font-semibold mb-4 text-slate-800">Kontrol Manual Pompa</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <ActuatorButton label="Nutrisi AB Mix" icon={Droplets} status={pompaNutrisiStatus} onToggle={() => handleActuatorToggle('nutrisi', pompaNutrisiStatus)} disabled={!isManualMode} color="purple" />
-            <ActuatorButton label="pH Up" icon={ChevronsUp} status={pompaPhUpStatus} onToggle={() => handleActuatorToggle('phUp', pompaPhUpStatus)} disabled={!isManualMode} color="sky" />
-            <ActuatorButton label="pH Down" icon={ChevronsDown} status={pompaPhDownStatus} onToggle={() => handleActuatorToggle('phDown', pompaPhDownStatus)} disabled={!isManualMode} color="amber" />
-            <ActuatorButton label="Sirkulasi Air" icon={RefreshCw} status={pompaSirkulasiStatus} onToggle={() => handleActuatorToggle('pump', pompaSirkulasiStatus)} disabled={!isManualMode} color="green" />
-          </div>
-           {!isManualMode && <p className="text-center text-xs text-amber-600 mt-4">Kontrol manual dinonaktifkan pada Mode Otomatis.</p>}
+        <h3 className="text-xl font-semibold mb-4 text-slate-800">Kontrol Manual Pompa</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <ActuatorButton label="Nutrisi AB Mix" icon={Droplets} status={pompaNutrisiStatus} onToggle={() => handleActuatorToggle('nutrisi', pompaNutrisiStatus)} disabled={!isManualMode} color="purple" />
+          <ActuatorButton label="pH Up" icon={ChevronsUp} status={pompaPhUpStatus} onToggle={() => handleActuatorToggle('phUp', pompaPhUpStatus)} disabled={!isManualMode} color="sky" />
+          <ActuatorButton label="pH Down" icon={ChevronsDown} status={pompaPhDownStatus} onToggle={() => handleActuatorToggle('phDown', pompaPhDownStatus)} disabled={!isManualMode} color="amber" />
+          <ActuatorButton label="Sirkulasi Air" icon={RefreshCw} status={pompaSirkulasiStatus} onToggle={() => handleActuatorToggle('pump', pompaSirkulasiStatus)} disabled={!isManualMode} color="green" />
+        </div>
+          {!isManualMode && <p className="text-center text-xs text-amber-600 mt-4">Kontrol manual dinonaktifkan pada Mode Otomatis.</p>}
       </div>
 
       {/* Grid untuk Chart */}
@@ -252,39 +256,39 @@ const DashboardClient = () => {
 
 // Komponen bantu untuk card sensor
 const SensorCard = ({ icon: Icon, label, value, unit, color }: { icon: React.ElementType, label: string, value: string, unit: string, color: string }) => (
-    <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-3">
-        <Icon className={`w-8 h-8 flex-shrink-0 ${color}`} />
-        <div>
-            <p className="text-gray-500 text-sm">{label}</p>
-            <p className="text-2xl font-bold text-slate-800">{value} <span className="text-lg font-normal text-gray-600">{unit}</span></p>
-        </div>
+  <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-3">
+    <Icon className={`w-8 h-8 flex-shrink-0 ${color}`} />
+    <div>
+      <p className="text-gray-500 text-sm">{label}</p>
+      <p className="text-2xl font-bold text-slate-800">{value} <span className="text-lg font-normal text-gray-600">{unit}</span></p>
     </div>
+  </div>
 );
 
 // Komponen bantu untuk tombol aktuator
 const ActuatorButton = ({ label, icon: Icon, status, onToggle, disabled, color }: { label: string, icon: React.ElementType, status: boolean, onToggle: () => void, disabled: boolean, color: string }) => {
-    const colorClasses = {
-        purple: { text: 'text-purple-600', bg: 'bg-purple-500', hover: 'hover:bg-purple-600' },
-        sky: { text: 'text-sky-600', bg: 'bg-sky-500', hover: 'hover:bg-sky-600' },
-        amber: { text: 'text-amber-600', bg: 'bg-amber-500', hover: 'hover:bg-amber-600' },
-        green: { text: 'text-green-600', bg: 'bg-green-500', hover: 'hover:bg-green-600' },
-    };
-    const selectedColor = colorClasses[color as keyof typeof colorClasses] || colorClasses.purple;
+  const colorClasses = {
+    purple: { text: 'text-purple-600', bg: 'bg-purple-500', hover: 'hover:bg-purple-600' },
+    sky: { text: 'text-sky-600', bg: 'bg-sky-500', hover: 'hover:bg-sky-600' },
+    amber: { text: 'text-amber-600', bg: 'bg-amber-500', hover: 'hover:bg-amber-600' },
+    green: { text: 'text-green-600', bg: 'bg-green-500', hover: 'hover:bg-green-600' },
+  };
+  const selectedColor = colorClasses[color as keyof typeof colorClasses] || colorClasses.purple;
 
-    return (
-        <div className="flex justify-between items-center bg-gray-100 p-3 rounded-lg">
-            <div className="flex items-center space-x-3">
-                <Icon className={`w-7 h-7 ${status ? selectedColor.text : 'text-gray-400'}`} />
-                <div>
-                    <p className="font-semibold text-slate-700">{label}</p>
-                    <p className={`text-sm ${status ? selectedColor.text : 'text-gray-500'}`}>{status ? 'Menyala' : 'Mati'}</p>
-                </div>
-            </div>
-            <button onClick={onToggle} disabled={disabled} className={`p-3 rounded-full transition-colors ${status ? `${selectedColor.bg} ${selectedColor.hover}` : 'bg-gray-300 hover:bg-gray-400'} disabled:bg-gray-200 disabled:cursor-not-allowed`}>
-                <Power className="w-5 h-5 text-white" />
-            </button>
+  return (
+    <div className="flex justify-between items-center bg-gray-100 p-3 rounded-lg">
+      <div className="flex items-center space-x-3">
+        <Icon className={`w-7 h-7 ${status ? selectedColor.text : 'text-gray-400'}`} />
+        <div>
+          <p className="font-semibold text-slate-700">{label}</p>
+          <p className={`text-sm ${status ? selectedColor.text : 'text-gray-500'}`}>{status ? 'Menyala' : 'Mati'}</p>
         </div>
-    );
+      </div>
+      <button onClick={onToggle} disabled={disabled} className={`p-3 rounded-full transition-colors ${status ? `${selectedColor.bg} ${selectedColor.hover}` : 'bg-gray-300 hover:bg-gray-400'} disabled:bg-gray-200 disabled:cursor-not-allowed`}>
+        <Power className="w-5 h-5 text-white" />
+      </button>
+    </div>
+  );
 };
 
 export default DashboardClient;
