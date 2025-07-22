@@ -14,7 +14,7 @@ export function DockNavigation() {
         <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/indoor-hidroponic')}>
           <Home className="h-5 w-5" />
         </DockIcon>
-        <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/indoor-hidroponic/control')}>
+        <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/indoor-hidroponic/settings')}>
           <SlidersHorizontal className="h-5 w-5" />
         </DockIcon>
       </Dock>

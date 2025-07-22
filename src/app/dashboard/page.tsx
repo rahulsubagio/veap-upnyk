@@ -87,14 +87,14 @@ export default async function DashboardPortalPage() {
       href: isLoggedIn ? "/dashboard/green-pyramid" : "/login?dashboard=green-pyramid"
     },
     {
-      imageSrc: "/images/dash-iot.jpg",
+      imageSrc: "/images/smartdec-dash.png",
       icon: <Briefcase className="h-8 w-8 text-blue-700" />,
       title: "Smartdec",
       description: "Smart irrigation and nutrient monitoring system for open-field precision agriculture.",
       href: isLoggedIn ? "/dashboard/smartdec" : "/login?dashboard=smartdec"
     },
     {
-      imageSrc: "/images/dash-iot.jpg",
+      imageSrc: "/images/hidroponik-indoor-dash.png",
       icon: <Building className="h-8 w-8 text-purple-700" />,
       title: "Indoor Hidroponic",
       description: "Micro-environment control for efficient indoor hydroponic vegetable cultivation.",
