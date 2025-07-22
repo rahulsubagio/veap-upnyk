@@ -191,7 +191,7 @@ export default function Home() {
               </div> */}
               <div className="relative z-10 transform transition-transform duration-500 hover:scale-105">
                 <BlurFade direction='down' delay={0.25}>
-                  <Image src="/images/hidroponik-indoor-dash.png" width={450} height={450} alt="gambar green house vektor" data-aos="fade-down" className='rounded-b-full' />
+                  <Image src="/images/green-house-pyramid-isometric2-removebg-preview.png" width={450} height={450} alt="gambar green house vektor" data-aos="fade-down" className='rounded-b-full' />
                 </BlurFade>
               </div>
               <div className="absolute top-10 right-5 text-blue-200 -z-0" style={{ fontSize: '3rem', lineHeight: 0.5 }}>...<br/>...<br/>...<br/>...</div>
@@ -259,7 +259,7 @@ export default function Home() {
               </div>
               <div data-aos="fade-left">
                 <div className="relative w-full h-80 rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105">
-                  <Image src="/images/dash-iot.jpg" layout="fill" objectFit="cover" alt="[Ilustrasi Dashboard IoT]" />
+                  <Image src="/images/hidroponik-indoor-dash.png" layout="fill" objectFit="cover" alt="[Ilustrasi Dashboard IoT]" />
                 </div>
               </div>
             </div>
