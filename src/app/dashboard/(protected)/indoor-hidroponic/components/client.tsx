@@ -209,7 +209,7 @@ const DashboardClient = () => {
 
   return (
     <>
-      <div className="mb-6 flex justify-end items-center">
+      <div className="mb-6 mt-4 flex justify-end items-center">
         <button onClick={handleModeChange} className="flex items-center justify-center space-x-3 px-4 py-2 rounded-lg text-sm font-semibold transition-colors bg-gray-200 hover:bg-gray-300 text-gray-800">
             {controlMode === 'auto' ? <Bot className="text-cyan-600"/> : <User className="text-green-600"/>}
             <span>Mode: <span className="font-bold uppercase">{controlMode}</span></span>
@@ -217,7 +217,7 @@ const DashboardClient = () => {
       </div>
 
       {/* Grid untuk Sensor */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
         <SensorCard icon={FlaskConical} label="pH Air" value={sensorData.ph?.toFixed(2) ?? '...'} unit="" color="text-green-500" />
         <SensorCard icon={Thermometer} label="Suhu Air" value={sensorData.water_temp?.toFixed(1) ?? '...'} unit="°C" color="text-blue-500" />
         <SensorCard icon={Waves} label="TDS" value={sensorData.tds?.toFixed(0) ?? '...'} unit="ppm" color="text-purple-500" />

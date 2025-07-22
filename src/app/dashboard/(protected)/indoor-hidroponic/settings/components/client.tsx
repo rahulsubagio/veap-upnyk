@@ -143,7 +143,7 @@ const SettingsClient = () => {
   };
   
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6 mb-18">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4 mb-18">
       {/* Kolom Pengaturan Otomatis */}
       <div className="bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-cyan-600 mb-6">Pengaturan Mode Otomatis</h2>
