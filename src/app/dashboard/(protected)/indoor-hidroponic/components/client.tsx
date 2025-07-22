@@ -80,7 +80,7 @@ const DashboardClient = () => {
 
   // --- Efek untuk Koneksi MQTT ---
   useEffect(() => {
-    const brokerUrl = 'ws://147.93.96.15:9001';
+    const brokerUrl = 'wss://veap-upnyk.id/mqtt9001';
     const options: mqtt.IClientOptions = {
       clientId: `nextjs-hidroponik-client-${Math.random().toString(16).substr(2, 8)}`,
     };

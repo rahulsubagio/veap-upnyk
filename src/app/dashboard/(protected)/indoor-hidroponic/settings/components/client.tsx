@@ -30,7 +30,7 @@ const SettingsClient = () => {
   const SETTINGS_GET_TOPIC = 'indoorHidroponic/control/settings/get';
 
   useEffect(() => {
-    const brokerUrl = 'ws://147.93.96.15:9001';
+    const brokerUrl = 'wss://veap-upnyk.id/mqtt';
     const mqttClient = mqtt.connect(brokerUrl);
     setClient(mqttClient);
 
