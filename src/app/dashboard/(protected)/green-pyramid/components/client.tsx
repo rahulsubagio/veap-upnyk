@@ -254,10 +254,10 @@ const DashboardClient = () => {
           <ActuatorButton label="Kipas Indoor" icon={Fan} status={relayAIN2Status} onToggle={() => handleActuatorToggle('relayAIN2', relayAIN2Status)} disabled={!isManualMode} color="green" />
           <ActuatorButton label="Pompa Pendorong" icon={Cable} status={relayAIN3Status} onToggle={() => handleActuatorToggle('relayAIN3', relayAIN3Status)} disabled={!isManualMode} color="cyan" />
           <ActuatorButton label="Relay A" icon={RefreshCw} status={relayAIN4Status} onToggle={() => handleActuatorToggle('relayAIN4', relayAIN4Status)} disabled={!isManualMode} color="indigo" />
-          <ActuatorButton label="Sprinkler A" icon={Bubbles} status={relayBIN1Status} onToggle={() => handleActuatorToggle('relayBIN1', relayBIN1Status)} disabled={!isManualMode} color="fuchsia" />
-          <ActuatorButton label="Sprinkler B" icon={Bubbles} status={relayBIN2Status} onToggle={() => handleActuatorToggle('relayBIN2', relayBIN2Status)} disabled={!isManualMode} color="purple" />
-          <ActuatorButton label="Misting A" icon={Droplets} status={relayBIN3Status} onToggle={() => handleActuatorToggle('relayBIN3', relayBIN3Status)} disabled={!isManualMode} color="emerald" />
-          <ActuatorButton label="Misting B" icon={Droplets} status={relayBIN4Status} onToggle={() => handleActuatorToggle('relayBIN4', relayBIN4Status)} disabled={!isManualMode} color="sky" />
+          <ActuatorButton label="Misting A" icon={Bubbles} status={relayBIN1Status} onToggle={() => handleActuatorToggle('relayBIN1', relayBIN1Status)} disabled={!isManualMode} color="fuchsia" />
+          <ActuatorButton label="Misting B" icon={Bubbles} status={relayBIN2Status} onToggle={() => handleActuatorToggle('relayBIN2', relayBIN2Status)} disabled={!isManualMode} color="purple" />
+          <ActuatorButton label="Sprinkler A" icon={Droplets} status={relayBIN3Status} onToggle={() => handleActuatorToggle('relayBIN3', relayBIN3Status)} disabled={!isManualMode} color="emerald" />
+          <ActuatorButton label="Sprinkler B" icon={Droplets} status={relayBIN4Status} onToggle={() => handleActuatorToggle('relayBIN4', relayBIN4Status)} disabled={!isManualMode} color="sky" />
         </div>
           {!isManualMode && <p className="text-center text-xs text-amber-600 mt-4">Kontrol manual dinonaktifkan pada Mode Otomatis.</p>}
       </div>
