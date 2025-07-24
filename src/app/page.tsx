@@ -259,7 +259,7 @@ export default function Home() {
               </div>
               <div data-aos="fade-left">
                 <div className="relative w-full h-80 rounded-lg shadow-xl overflow-hidden transform transition-transform duration-500 hover:scale-105">
-                  <Image src="/images/hidroponik-indoor-dash.png" layout="fill" objectFit="cover" alt="[Ilustrasi Dashboard IoT]" />
+                  <Image src="/images/green-pyramid-dash.png" layout="fill" objectFit="cover" alt="[Ilustrasi Dashboard IoT]" />
                 </div>
               </div>
             </div>

@@ -80,7 +80,7 @@ export default async function DashboardPortalPage() {
 
   const projectData: ProjectCardProps[] = [
     {
-      imageSrc: "/images/dash-iot.jpg",
+      imageSrc: "/images/green-pyramid-dash.png",
       icon: <Sprout className="h-8 w-8 text-green-700" />,
       title: "Green Pyramid",
       description: "University research greenhouse monitoring for tropical plants and conservation.",
@@ -90,7 +90,7 @@ export default async function DashboardPortalPage() {
       imageSrc: "/images/smartdec-dash.png",
       icon: <Briefcase className="h-8 w-8 text-blue-700" />,
       title: "Smartdec",
-      description: "Smart irrigation and nutrient monitoring system for open-field precision agriculture.",
+      description: "Smart portable monitoring system for open-field precision agriculture.",
       href: isLoggedIn ? "/dashboard/smartdec" : "/login?dashboard=smartdec"
     },
     {
