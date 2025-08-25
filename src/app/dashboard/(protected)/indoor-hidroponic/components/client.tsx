@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import mqtt from 'mqtt';
-import { Thermometer, Droplets, FlaskConical, Zap, Power, Bot, User, RefreshCw, ChevronsUp, ChevronsDown, Waves } from 'lucide-react';
+import { Thermometer, Droplets, FlaskConical, Zap, Power, Bot, User, RefreshCw, GlassWater, ChevronsDown, Waves, Wind, Bubbles } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -34,6 +34,8 @@ type SensorData = {
   water_temp: number | null;
   room_temp: number | null;
   humidity: number | null;
+  tvoc: number | null;
+  co2: number | null;
 };
 
 type ControlMode = 'manual' | 'auto';
@@ -46,12 +48,14 @@ type ChartDataState = {
   water_temp: (number | null)[];
   room_temp: (number | null)[];
   humidity: (number | null)[];
+  tvoc: (number | null)[];
+  co2: (number | null)[];
 };
 
 const MAX_CHART_POINTS = 20;
 
-const initialSensorData: SensorData = { ec: null, tds: null, ph: null, water_temp: null, room_temp: null, humidity: null };
-const initialChartData: ChartDataState = { labels: [], ec: [], tds: [], ph: [], water_temp: [], room_temp: [], humidity: [] };
+const initialSensorData: SensorData = { ec: null, tds: null, ph: null, water_temp: null, room_temp: null, humidity: null, tvoc: null, co2: null };
+const initialChartData: ChartDataState = { labels: [], ec: [], tds: [], ph: [], water_temp: [], room_temp: [], humidity: [], tvoc: [], co2: [] };
 
 // PERBAIKAN: Pindahkan konstanta ke luar komponen
 const SENSOR_DATA_TOPIC = 'indoorHidroponic/sensors/data';
@@ -126,6 +130,8 @@ const DashboardClient = () => {
               water_temp: [...prevData.water_temp, data.water_temp].slice(-MAX_CHART_POINTS),
               room_temp: [...prevData.room_temp, data.room_temp].slice(-MAX_CHART_POINTS),
               humidity: [...prevData.humidity, data.humidity].slice(-MAX_CHART_POINTS),
+              tvoc: [...prevData.tvoc, data.tvoc].slice(-MAX_CHART_POINTS),
+              co2: [...prevData.co2, data.co2].slice(-MAX_CHART_POINTS),
             };
           });
 
@@ -217,13 +223,15 @@ const DashboardClient = () => {
       </div>
 
       {/* Grid untuk Sensor */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
         <SensorCard icon={FlaskConical} label="pH Air" value={sensorData.ph?.toFixed(2) ?? '...'} unit="" color="text-green-500" />
         <SensorCard icon={Thermometer} label="Suhu Air" value={sensorData.water_temp?.toFixed(1) ?? '...'} unit="°C" color="text-blue-500" />
         <SensorCard icon={Waves} label="TDS" value={sensorData.tds?.toFixed(0) ?? '...'} unit="ppm" color="text-purple-500" />
         <SensorCard icon={Zap} label="EC" value={sensorData.ec?.toFixed(0) ?? '...'} unit="µS/cm" color="text-yellow-500" />
         <SensorCard icon={Thermometer} label="Suhu Ruang" value={sensorData.room_temp?.toFixed(1) ?? '...'} unit="°C" color="text-red-500" />
         <SensorCard icon={Droplets} label="Kelembapan" value={sensorData.humidity?.toFixed(1) ?? '...'} unit="%" color="text-cyan-500" />
+        <SensorCard icon={Wind} label="tVOC" value={sensorData.tvoc?.toFixed(0) ?? '...'} unit="mg/m³" color="text-teal-500" />
+        <SensorCard icon={Bubbles} label="CO₂" value={sensorData.co2?.toFixed(0) ?? '...'} unit="ppm" color="text-indigo-500" />
       </div>
 
       {/* Grid untuk Kontrol */}
@@ -231,15 +239,15 @@ const DashboardClient = () => {
         <h3 className="text-xl font-semibold mb-4 text-slate-800">Kontrol Manual Pompa</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <ActuatorButton label="Nutrisi AB Mix" icon={Droplets} status={pompaNutrisiStatus} onToggle={() => handleActuatorToggle('nutrisi', pompaNutrisiStatus)} disabled={!isManualMode} color="purple" />
-          <ActuatorButton label="pH Up" icon={ChevronsUp} status={pompaPhUpStatus} onToggle={() => handleActuatorToggle('phUp', pompaPhUpStatus)} disabled={!isManualMode} color="sky" />
           <ActuatorButton label="pH Down" icon={ChevronsDown} status={pompaPhDownStatus} onToggle={() => handleActuatorToggle('phDown', pompaPhDownStatus)} disabled={!isManualMode} color="amber" />
+          <ActuatorButton label="Air Baku" icon={GlassWater} status={pompaPhUpStatus} onToggle={() => handleActuatorToggle('phUp', pompaPhUpStatus)} disabled={!isManualMode} color="sky" />
           <ActuatorButton label="Sirkulasi Air" icon={RefreshCw} status={pompaSirkulasiStatus} onToggle={() => handleActuatorToggle('pump', pompaSirkulasiStatus)} disabled={!isManualMode} color="green" />
         </div>
           {!isManualMode && <p className="text-center text-xs text-amber-600 mt-4">Kontrol manual dinonaktifkan pada Mode Otomatis.</p>}
       </div>
 
       {/* Grid untuk Chart */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-18">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-18">
         <div className="bg-white p-4 rounded-lg shadow-md h-64">
           <Line options={{...chartOptions, plugins: {...chartOptions.plugins, title: {...chartOptions.plugins?.title, text: 'TDS & EC'}}}} data={{ labels: chartData.labels, datasets: [ { label: 'TDS (ppm)', data: chartData.tds, borderColor: '#a855f7', backgroundColor: '#a855f733' }, { label: 'EC (µS/cm)', data: chartData.ec, borderColor: '#eab308', backgroundColor: '#eab30833' } ]}} />
         </div>
@@ -248,6 +256,9 @@ const DashboardClient = () => {
         </div>
         <div className="bg-white p-4 rounded-lg shadow-md h-64">
            <Line options={{...chartOptions, plugins: {...chartOptions.plugins, title: {...chartOptions.plugins?.title, text: 'Suhu & Kelembapan Ruang'}}}} data={{ labels: chartData.labels, datasets: [ { label: 'Suhu (°C)', data: chartData.room_temp, borderColor: '#ef4444', backgroundColor: '#ef444433' }, { label: 'Kelembapan (%)', data: chartData.humidity, borderColor: '#06b6d4', backgroundColor: '#06b6d433' } ]}} />
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-md h-64">
+           <Line options={{...chartOptions, plugins: {...chartOptions.plugins, title: {...chartOptions.plugins?.title, text: 'tVOC & CO₂'}}}} data={{ labels: chartData.labels, datasets: [ { label: 'tVOC (mg/m³)', data: chartData.tvoc, borderColor: '#00bba7', backgroundColor: '#00bba733' }, { label: 'CO₂ (ppm)', data: chartData.co2, borderColor: '#615fff', backgroundColor: '#615fff33' } ]}} />
         </div>
       </div>
     </>
@@ -259,8 +270,8 @@ const SensorCard = ({ icon: Icon, label, value, unit, color }: { icon: React.Ele
   <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-3">
     <Icon className={`w-8 h-8 flex-shrink-0 ${color}`} />
     <div>
-      <p className="text-gray-500 text-sm">{label}</p>
-      <p className="text-2xl font-bold text-slate-800">{value} <span className="text-lg font-normal text-gray-600">{unit}</span></p>
+      <p className="text-gray-500 text-xs md:text-sm">{label}</p>
+      <p className="text-xl md:text-2xl font-bold text-slate-800">{value} <span className="text-sm md:text-lg font-normal text-gray-600">{unit}</span></p>
     </div>
   </div>
 );

@@ -7,8 +7,12 @@ import { Save, FlaskConical } from 'lucide-react';
 const SettingsClient = () => {
   // --- State Pengaturan ---
   const [tdsThreshold, setTdsThreshold] = useState('');
-  const [lowPhThreshold, setLowPhThreshold] = useState('');
+  // const [lowPhThreshold, setLowPhThreshold] = useState('');
   const [highPhThreshold, setHighPhThreshold] = useState('');
+  const [volumeABMix, setVolumeABMix] = useState('');
+  const [volumePHDown, setVolumePHDown] = useState('');
+  const [interval_siklusABMix, setInterval_siklusABMix] = useState('');
+  const [interval_siklusPHDown, setInterval_siklusPHDown] = useState('');
   const [morningStartTime, setMorningStartTime] = useState('');
   const [morningEndTime, setMorningEndTime] = useState('');
   const [afternoonStartTime, setAfternoonStartTime] = useState('');
@@ -64,13 +68,24 @@ const SettingsClient = () => {
       else if (topic === SETTINGS_STATUS_TOPIC) {
         try {
           const settings = JSON.parse(payload);
-          setTdsThreshold(settings.tds_threshold.toString());
-          setLowPhThreshold(settings.lowph_threshold.toString());
-          setHighPhThreshold(settings.highph_threshold.toString());
-          setMorningStartTime(settings.morning_start);
-          setMorningEndTime(settings.morning_end);
-          setAfternoonStartTime(settings.afternoon_start);
-          setAfternoonEndTime(settings.afternoon_end);
+          
+          // --- PERBAIKAN DITERAPKAN DI SINI ---
+          // Cek jika properti ada sebelum digunakan, dan berikan nilai default jika tidak ada.
+          
+          setTdsThreshold(settings.tds_threshold?.toString() ?? '');
+          setHighPhThreshold(settings.highph_threshold?.toString() ?? '');
+          setVolumeABMix(settings.volume_ABMix?.toString() ?? '');
+          setVolumePHDown(settings.volume_PHDown?.toString() ?? '');
+          setInterval_siklusABMix(settings.interval_ABMix?.toString() ?? '');
+          setInterval_siklusPHDown(settings.interval_PHDown?.toString() ?? '');
+          
+          // Untuk waktu, gunakan string kosong '' sebagai nilai default.
+          setMorningStartTime(settings.morning_start ?? '');
+          setMorningEndTime(settings.morning_end ?? '');
+          setAfternoonStartTime(settings.afternoon_start ?? '');
+          setAfternoonEndTime(settings.afternoon_end ?? '');
+          // --- AKHIR DARI PERBAIKAN ---
+
           console.log("Pengaturan diterima dari ESP32:", settings);
         } catch(e) {
           console.error("Gagal parse data pengaturan:", e);
@@ -93,7 +108,6 @@ const SettingsClient = () => {
         clearTimeout(dataTimeoutRef.current);
       }
       if (mqttClient) {
-        // PERBAIKAN: Hapus semua listener sebelum menutup koneksi
         mqttClient.removeAllListeners();
         mqttClient.end();
       }
@@ -105,8 +119,12 @@ const SettingsClient = () => {
       setSaveStatus('saving');
       const settingsPayload = {
         tds_threshold: parseInt(tdsThreshold, 10),
-        lowph_threshold: parseFloat(lowPhThreshold),
+        // lowph_threshold: parseFloat(lowPhThreshold),
         highph_threshold: parseFloat(highPhThreshold),
+        volume_ABMix: parseInt(volumeABMix, 10),
+        volume_PHDown: parseInt(volumePHDown, 10),
+        interval_ABMix: parseInt(interval_siklusABMix, 10),
+        interval_PHDown: parseInt(interval_siklusPHDown, 10),
         morning_start: morningStartTime,
         morning_end: morningEndTime,
         afternoon_start: afternoonStartTime,
@@ -151,25 +169,54 @@ const SettingsClient = () => {
           <div className="space-y-6">
             {/* Ambang Batas */}
             <div>
-                <label htmlFor="tds" className="block text-sm font-medium text-gray-700 mb-2">Ambang Batas TDS (ppm)</label>
-                <input type="number" id="tds" value={tdsThreshold} onChange={(e) => setTdsThreshold(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
-                <p className="text-xs text-gray-500 mt-1">Pompa nutrisi akan menyala jika TDS di bawah nilai ini.</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                  <label htmlFor="lowph" className="block text-sm font-medium text-gray-700 mb-2">Ambang Batas pH Rendah</label>
-                  <input type="number" step="0.1" id="lowph" value={lowPhThreshold} onChange={(e) => setLowPhThreshold(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
-                  <p className="text-xs text-gray-500 mt-1">Pompa pH Up akan nyala.</p>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Pengaturan Nutrisi</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label htmlFor="tds" className="block text-sm font-medium text-gray-700 mb-2">Ambang Batas TDS (ppm)</label>
+                    <input type="number" id="tds" value={tdsThreshold} onChange={(e) => setTdsThreshold(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
+                    <p className="text-xs text-gray-500 mt-1">Pompa nutrisi akan menyala jika TDS di bawah nilai ini.</p>
+                </div>
+                <div>
+                    <label htmlFor="tds" className="block text-sm font-medium text-gray-700 mb-2">Output (ml)</label>
+                    <input type="number" id="tds" value={volumeABMix} onChange={(e) => setVolumeABMix(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
+                    <p className="text-xs text-gray-500 mt-1">Output nutrisi per mili liter (ml).</p>
+                </div>
+                <div>
+                    <label htmlFor="tds" className="block text-sm font-medium text-gray-700 mb-2">Durasi Interval (ms)</label>
+                    <input type="number" id="tds" value={interval_siklusABMix} onChange={(e) => setInterval_siklusABMix(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
+                    <p className="text-xs text-gray-500 mt-1">Durasi interval / jeda per mili second (ms).</p>
+                </div>
               </div>
-              <div>
-                  <label htmlFor="highph" className="block text-sm font-medium text-gray-700 mb-2">Ambang Batas pH Tinggi</label>
-                  <input type="number" step="0.1" id="highph" value={highPhThreshold} onChange={(e) => setHighPhThreshold(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
-                  <p className="text-xs text-gray-500 mt-1">Pompa pH Down akan nyala.</p>
+            </div>
+
+            <div className="pt-4 border-t border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Pengaturan pH</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* <div>
+                    <label htmlFor="lowph" className="block text-sm font-medium text-gray-700 mb-2">Ambang Batas pH Rendah</label>
+                    <input type="number" step="0.1" id="lowph" value={lowPhThreshold} onChange={(e) => setLowPhThreshold(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
+                    <p className="text-xs text-gray-500 mt-1">Pompa pH Up akan nyala.</p>
+                </div> */}
+                <div>
+                    <label htmlFor="highph" className="block text-sm font-medium text-gray-700 mb-2">Ambang Batas pH Tinggi</label>
+                    <input type="number" step="0.1" id="highph" value={highPhThreshold} onChange={(e) => setHighPhThreshold(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
+                    <p className="text-xs text-gray-500 mt-1">Pompa pH Down akan nyala.</p>
+                </div>
+                <div>
+                    <label htmlFor="tds" className="block text-sm font-medium text-gray-700 mb-2">Output (ml)</label>
+                    <input type="number" id="tds" value={volumePHDown} onChange={(e) => setVolumePHDown(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
+                    <p className="text-xs text-gray-500 mt-1">Output nutrisi per mili liter (ml).</p>
+                </div>
+                <div>
+                    <label htmlFor="tds" className="block text-sm font-medium text-gray-700 mb-2">Durasi Interval (ms)</label>
+                    <input type="number" id="tds" value={interval_siklusPHDown} onChange={(e) => setInterval_siklusPHDown(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
+                    <p className="text-xs text-gray-500 mt-1">Durasi interval / jeda per mili second (ms).</p>
+                </div>
               </div>
             </div>
 
             {/* Penjadwalan */}
-            <div className="pt-4 border-t border-gray-200">
+            {/* <div className="pt-4 border-t border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Penjadwalan Waktu Aktif</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -189,7 +236,7 @@ const SettingsClient = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="mt-8 text-right">
