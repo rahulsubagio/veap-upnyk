@@ -13,10 +13,10 @@ const SettingsClient = () => {
   const [volumePHDown, setVolumePHDown] = useState('');
   const [interval_siklusABMix, setInterval_siklusABMix] = useState('');
   const [interval_siklusPHDown, setInterval_siklusPHDown] = useState('');
-  const [morningStartTime, setMorningStartTime] = useState('');
-  const [morningEndTime, setMorningEndTime] = useState('');
-  const [afternoonStartTime, setAfternoonStartTime] = useState('');
-  const [afternoonEndTime, setAfternoonEndTime] = useState('');
+  // const [morningStartTime, setMorningStartTime] = useState('');
+  // const [morningEndTime, setMorningEndTime] = useState('');
+  // const [afternoonStartTime, setAfternoonStartTime] = useState('');
+  // const [afternoonEndTime, setAfternoonEndTime] = useState('');
   const [client, setClient] = useState<mqtt.MqttClient | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [calStatus, setCalStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -80,10 +80,10 @@ const SettingsClient = () => {
           setInterval_siklusPHDown(settings.interval_PHDown?.toString() ?? '');
           
           // Untuk waktu, gunakan string kosong '' sebagai nilai default.
-          setMorningStartTime(settings.morning_start ?? '');
-          setMorningEndTime(settings.morning_end ?? '');
-          setAfternoonStartTime(settings.afternoon_start ?? '');
-          setAfternoonEndTime(settings.afternoon_end ?? '');
+          // setMorningStartTime(settings.morning_start ?? '');
+          // setMorningEndTime(settings.morning_end ?? '');
+          // setAfternoonStartTime(settings.afternoon_start ?? '');
+          // setAfternoonEndTime(settings.afternoon_end ?? '');
           // --- AKHIR DARI PERBAIKAN ---
 
           console.log("Pengaturan diterima dari ESP32:", settings);
@@ -125,10 +125,10 @@ const SettingsClient = () => {
         volume_PHDown: parseInt(volumePHDown, 10),
         interval_ABMix: parseInt(interval_siklusABMix, 10),
         interval_PHDown: parseInt(interval_siklusPHDown, 10),
-        morning_start: morningStartTime,
-        morning_end: morningEndTime,
-        afternoon_start: afternoonStartTime,
-        afternoon_end: afternoonEndTime,
+        // morning_start: morningStartTime,
+        // morning_end: morningEndTime,
+        // afternoon_start: afternoonStartTime,
+        // afternoon_end: afternoonEndTime,
       };
 
       client.publish(SETTINGS_COMMAND_TOPIC, JSON.stringify(settingsPayload), (err) => {

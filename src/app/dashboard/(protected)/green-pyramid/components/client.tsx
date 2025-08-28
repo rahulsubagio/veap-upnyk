@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import mqtt from 'mqtt';
-import { Thermometer, Droplets, FlaskConical, Zap, Power, Bot, User, RefreshCw, Waves, Fan, Cable, Bubbles } from 'lucide-react';
+import { Thermometer, Droplets, FlaskConical, Zap, Power, Bot, User, Waves, Fan, Cable, Bubbles } from 'lucide-react'; // RefreshCw
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -76,14 +76,14 @@ const DashboardClient = () => {
   const [sensorData, setSensorData] = useState<SensorData>(initialSensorData);
 
   const [relayAIN1Status, setRelayAIN1Status] = useState(false);
-  const [relayAIN2Status, setRelayAIN2Status] = useState(false);
+  // const [relayAIN2Status, setRelayAIN2Status] = useState(false);
   const [relayAIN3Status, setRelayAIN3Status] = useState(false);
-  const [relayAIN4Status, setRelayAIN4Status] = useState(false);
+  // const [relayAIN4Status, setRelayAIN4Status] = useState(false);
   
   const [relayBIN1Status, setRelayBIN1Status] = useState(false);
-  const [relayBIN2Status, setRelayBIN2Status] = useState(false);
+  // const [relayBIN2Status, setRelayBIN2Status] = useState(false);
   const [relayBIN3Status, setRelayBIN3Status] = useState(false);
-  const [relayBIN4Status, setRelayBIN4Status] = useState(false);
+  // const [relayBIN4Status, setRelayBIN4Status] = useState(false);
 
   const [controlMode, setControlMode] = useState<ControlMode>('manual');
   const [chartData, setChartData] = useState<ChartDataState>(initialChartData);
@@ -149,19 +149,19 @@ const DashboardClient = () => {
       } else if (topic === actuatorTopics.relayAIN1.status) {
         setRelayAIN1Status(payload === 'ON');
       } else if (topic === actuatorTopics.relayAIN2.status) {
-        setRelayAIN2Status(payload === 'ON');
+        // setRelayAIN2Status(payload === 'ON');
       } else if (topic === actuatorTopics.relayAIN3.status) {
         setRelayAIN3Status(payload === 'ON');
       } else if (topic === actuatorTopics.relayAIN4.status) {
-        setRelayAIN4Status(payload === 'ON');
+        // setRelayAIN4Status(payload === 'ON');
       } else if (topic === actuatorTopics.relayBIN1.status) {
         setRelayBIN1Status(payload === 'ON');
       } else if (topic === actuatorTopics.relayBIN2.status) {
-        setRelayBIN2Status(payload === 'ON');
+        // setRelayBIN2Status(payload === 'ON');
       } else if (topic === actuatorTopics.relayBIN3.status) {
         setRelayBIN3Status(payload === 'ON');
       } else if (topic === actuatorTopics.relayBIN4.status) {
-        setRelayBIN4Status(payload === 'ON');
+        // setRelayBIN4Status(payload === 'ON');
       }
     };
 
@@ -249,15 +249,15 @@ const DashboardClient = () => {
       {/* Grid untuk Kontrol */}
       <div className={`bg-white p-4 sm:p-6 mb-6 rounded-lg shadow-md transition-opacity ${!isManualMode ? 'opacity-60 cursor-not-allowed' : ''}`}>
         <h3 className="text-xl font-semibold mb-4 text-slate-800">Kontrol Manual</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 gap-4">
           <ActuatorButton label="Kipas Exhaust" icon={Fan} status={relayAIN1Status} onToggle={() => handleActuatorToggle('relayAIN1', relayAIN1Status)} disabled={!isManualMode} color="amber" />
-          <ActuatorButton label="Kipas Indoor" icon={Fan} status={relayAIN2Status} onToggle={() => handleActuatorToggle('relayAIN2', relayAIN2Status)} disabled={!isManualMode} color="green" />
+          {/* <ActuatorButton label="Kipas Indoor" icon={Fan} status={relayAIN2Status} onToggle={() => handleActuatorToggle('relayAIN2', relayAIN2Status)} disabled={!isManualMode} color="green" /> */}
           <ActuatorButton label="Pompa Pendorong" icon={Cable} status={relayAIN3Status} onToggle={() => handleActuatorToggle('relayAIN3', relayAIN3Status)} disabled={!isManualMode} color="cyan" />
-          <ActuatorButton label="Relay A" icon={RefreshCw} status={relayAIN4Status} onToggle={() => handleActuatorToggle('relayAIN4', relayAIN4Status)} disabled={!isManualMode} color="indigo" />
-          <ActuatorButton label="Misting A" icon={Bubbles} status={relayBIN1Status} onToggle={() => handleActuatorToggle('relayBIN1', relayBIN1Status)} disabled={!isManualMode} color="fuchsia" />
-          <ActuatorButton label="Misting B" icon={Bubbles} status={relayBIN2Status} onToggle={() => handleActuatorToggle('relayBIN2', relayBIN2Status)} disabled={!isManualMode} color="purple" />
-          <ActuatorButton label="Sprinkler A" icon={Droplets} status={relayBIN3Status} onToggle={() => handleActuatorToggle('relayBIN3', relayBIN3Status)} disabled={!isManualMode} color="emerald" />
-          <ActuatorButton label="Sprinkler B" icon={Droplets} status={relayBIN4Status} onToggle={() => handleActuatorToggle('relayBIN4', relayBIN4Status)} disabled={!isManualMode} color="sky" />
+          {/* <ActuatorButton label="Relay A" icon={RefreshCw} status={relayAIN4Status} onToggle={() => handleActuatorToggle('relayAIN4', relayAIN4Status)} disabled={!isManualMode} color="indigo" /> */}
+          <ActuatorButton label="Misting" icon={Bubbles} status={relayBIN1Status} onToggle={() => handleActuatorToggle('relayBIN1', relayBIN1Status)} disabled={!isManualMode} color="fuchsia" />
+          {/* <ActuatorButton label="Misting B" icon={Bubbles} status={relayBIN2Status} onToggle={() => handleActuatorToggle('relayBIN2', relayBIN2Status)} disabled={!isManualMode} color="purple" /> */}
+          <ActuatorButton label="Sprinkler" icon={Droplets} status={relayBIN3Status} onToggle={() => handleActuatorToggle('relayBIN3', relayBIN3Status)} disabled={!isManualMode} color="emerald" />
+          {/* <ActuatorButton label="Sprinkler B" icon={Droplets} status={relayBIN4Status} onToggle={() => handleActuatorToggle('relayBIN4', relayBIN4Status)} disabled={!isManualMode} color="sky" /> */}
         </div>
           {!isManualMode && <p className="text-center text-xs text-amber-600 mt-4">Kontrol manual dinonaktifkan pada Mode Otomatis.</p>}
       </div>
@@ -283,8 +283,8 @@ const SensorCard = ({ icon: Icon, label, value, unit, color }: { icon: React.Ele
   <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-3">
     <Icon className={`w-8 h-8 flex-shrink-0 ${color}`} />
     <div>
-      <p className="text-gray-500 text-sm">{label}</p>
-      <p className="text-2xl font-bold text-slate-800">{value} <span className="text-lg font-normal text-gray-600">{unit}</span></p>
+      <p className="text-gray-500 text-xs md:text-sm">{label}</p>
+      <p className="text-xl md:text-2xl font-bold text-slate-800">{value} <span className="text-sm md:text-lg font-normal text-gray-600">{unit}</span></p>
     </div>
   </div>
 );
