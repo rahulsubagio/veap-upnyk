@@ -52,6 +52,10 @@ type ChartDataState = {
   co2: (number | null)[];
 };
 
+type DashboardClientProps = {
+  role: 'super_admin' | 'admin' | 'guest';
+};
+
 const MAX_CHART_POINTS = 20;
 
 const initialSensorData: SensorData = { ec: null, tds: null, ph: null, water_temp: null, room_temp: null, humidity: null, tvoc: null, co2: null };
@@ -69,7 +73,8 @@ const actuatorTopics = {
   pump: { command: 'indoorHidroponic/actuator/pump/command', status: 'indoorHidroponic/actuator/pump/status' },
 };
 
-const DashboardClient = () => {
+const DashboardClient = ({ role }: DashboardClientProps) => {
+  const isGuest = role === 'guest';
   // --- State Aplikasi ---
   const [client, setClient] = useState<mqtt.MqttClient | null>(null);
   const [sensorData, setSensorData] = useState<SensorData>(initialSensorData);
@@ -179,6 +184,7 @@ const DashboardClient = () => {
 
   // --- Fungsi Handler ---
   const publishCommand = (topic: string, message: string) => {
+    if (isGuest) return;
     if (client && client.connected) {
       client.publish(topic, message);
     } else {
@@ -187,12 +193,14 @@ const DashboardClient = () => {
   };
 
   const handleActuatorToggle = (actuator: 'nutrisi' | 'phUp' | 'phDown' | 'pump', currentStatus: boolean) => {
+    if (isGuest) return;
     if (controlMode === 'manual') {
       publishCommand(actuatorTopics[actuator].command, currentStatus ? 'OFF' : 'ON');
     }
   };
 
   const handleModeChange = () => {
+    if (isGuest) return;
     const newMode = controlMode === 'manual' ? 'auto' : 'manual';
     publishCommand(MODE_COMMAND_TOPIC, newMode.toUpperCase());
   };
@@ -216,7 +224,7 @@ const DashboardClient = () => {
   return (
     <>
       <div className="mb-6 mt-4 flex justify-end items-center">
-        <button onClick={handleModeChange} className="flex items-center justify-center space-x-3 px-4 py-2 rounded-lg text-sm font-semibold transition-colors bg-gray-200 hover:bg-gray-300 text-gray-800">
+        <button onClick={handleModeChange} disabled={isGuest} className="flex items-center justify-center space-x-3 px-4 py-2 rounded-lg text-sm font-semibold transition-colors bg-gray-200 hover:bg-gray-300 text-gray-800">
             {controlMode === 'auto' ? <Bot className="text-cyan-600"/> : <User className="text-green-600"/>}
             <span>Mode: <span className="font-bold uppercase">{controlMode}</span></span>
         </button>
@@ -235,15 +243,21 @@ const DashboardClient = () => {
       </div>
 
       {/* Grid untuk Kontrol */}
-      <div className={`bg-white p-6 mb-6 rounded-lg shadow-md transition-opacity ${!isManualMode ? 'opacity-60 cursor-not-allowed' : ''}`}>
+      <div className={`bg-white p-6 mb-6 rounded-lg shadow-md transition-opacity ${!isManualMode || isGuest ? 'opacity-60 cursor-not-allowed' : ''}`}>
         <h3 className="text-xl font-semibold mb-4 text-slate-800">Kontrol Manual Pompa</h3>
+        {isGuest && (
+          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 mb-4 rounded-md" role="alert">
+            <p className="font-bold">Mode Tampilan (Read-Only)</p>
+            <p>Anda login sebagai Guest. Semua kontrol dinonaktifkan.</p>
+          </div>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <ActuatorButton label="Nutrisi AB Mix" icon={Droplets} status={pompaNutrisiStatus} onToggle={() => handleActuatorToggle('nutrisi', pompaNutrisiStatus)} disabled={!isManualMode} color="purple" />
-          <ActuatorButton label="pH Down" icon={ChevronsDown} status={pompaPhDownStatus} onToggle={() => handleActuatorToggle('phDown', pompaPhDownStatus)} disabled={!isManualMode} color="amber" />
-          <ActuatorButton label="Air Baku" icon={GlassWater} status={pompaPhUpStatus} onToggle={() => handleActuatorToggle('phUp', pompaPhUpStatus)} disabled={!isManualMode} color="sky" />
-          <ActuatorButton label="Sirkulasi Air" icon={RefreshCw} status={pompaSirkulasiStatus} onToggle={() => handleActuatorToggle('pump', pompaSirkulasiStatus)} disabled={!isManualMode} color="green" />
+          <ActuatorButton label="Nutrisi AB Mix" icon={Droplets} status={pompaNutrisiStatus} onToggle={() => handleActuatorToggle('nutrisi', pompaNutrisiStatus)} disabled={!isManualMode || isGuest} color="purple" />
+          <ActuatorButton label="pH Down" icon={ChevronsDown} status={pompaPhDownStatus} onToggle={() => handleActuatorToggle('phDown', pompaPhDownStatus)} disabled={!isManualMode || isGuest} color="amber" />
+          <ActuatorButton label="Air Baku" icon={GlassWater} status={pompaPhUpStatus} onToggle={() => handleActuatorToggle('phUp', pompaPhUpStatus)} disabled={!isManualMode || isGuest} color="sky" />
+          <ActuatorButton label="Sirkulasi Air" icon={RefreshCw} status={pompaSirkulasiStatus} onToggle={() => handleActuatorToggle('pump', pompaSirkulasiStatus)} disabled={!isManualMode || isGuest} color="green" />
         </div>
-          {!isManualMode && <p className="text-center text-xs text-amber-600 mt-4">Kontrol manual dinonaktifkan pada Mode Otomatis.</p>}
+          {!isManualMode && !isGuest && <p className="text-center text-xs text-amber-600 mt-4">Kontrol manual dinonaktifkan pada Mode Otomatis.</p>}
       </div>
 
       {/* Grid untuk Chart */}

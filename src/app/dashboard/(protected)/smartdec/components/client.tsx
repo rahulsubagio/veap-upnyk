@@ -18,7 +18,6 @@ import {
 } from 'chart.js';
 import 'chart.js/auto';
 import { Thermometer, Droplets, TestTube, Waves } from 'lucide-react';
-import { DockNavigation } from './dock';
 
 // Daftarkan komponen Chart.js
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, TimeScale);
@@ -209,9 +208,6 @@ export default function SmartdecDashboardClient() {
           <Line options={options} data={chartData} />
         </div>
       </div>
-
-      {/* Navigasi Dock */}
-      <DockNavigation />
     </div>
   );
 }

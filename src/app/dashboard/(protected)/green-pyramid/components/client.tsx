@@ -48,6 +48,10 @@ type ChartDataState = {
   humidity: (number | null)[];
 };
 
+type DashboardClientProps = {
+  role: 'super_admin' | 'admin' | 'guest';
+};
+
 const MAX_CHART_POINTS = 20;
 
 const initialSensorData: SensorData = { ec: null, tds: null, ph: null, water_temp: null, room_temp: null, humidity: null };
@@ -70,7 +74,8 @@ const actuatorTopics = {
   relayBIN4: { command: 'gh/actuator/relayBIN4/command', status: 'gh/actuator/relayBIN4/status' },
 };
 
-const DashboardClient = () => {
+const DashboardClient = ({ role }: DashboardClientProps) => {
+  const isGuest = role === 'guest';
   // --- State Aplikasi ---
   const [client, setClient] = useState<mqtt.MqttClient | null>(null);
   const [sensorData, setSensorData] = useState<SensorData>(initialSensorData);
@@ -144,7 +149,7 @@ const DashboardClient = () => {
         } catch (e) {
           console.error("Gagal parse data sensor:", e);
         }
-      } else if (topic === MODE_STATUS_TOPIC) { // statusrelay
+      } else if (topic === MODE_STATUS_TOPIC) {
         setControlMode(payload.toLowerCase() as ControlMode);
       } else if (topic === actuatorTopics.relayAIN1.status) {
         setRelayAIN1Status(payload === 'ON');
@@ -193,6 +198,7 @@ const DashboardClient = () => {
 
   // --- Fungsi Handler ---
   const publishCommand = (topic: string, message: string) => {
+    if (isGuest) return;
     if (client && client.connected) {
       client.publish(topic, message);
     } else {
@@ -201,12 +207,14 @@ const DashboardClient = () => {
   };
 
   const handleActuatorToggle = (actuator: 'relayAIN1' | 'relayAIN2' | 'relayAIN3' | 'relayAIN4' | 'relayBIN1' | 'relayBIN2' | 'relayBIN3' | 'relayBIN4', currentStatus: boolean) => {
+    if (isGuest) return;
     if (controlMode === 'manual') {
       publishCommand(actuatorTopics[actuator].command, currentStatus ? 'OFF' : 'ON');
     }
   };
 
   const handleModeChange = () => {
+    if (isGuest) return;
     const newMode = controlMode === 'manual' ? 'auto' : 'manual';
     publishCommand(MODE_COMMAND_TOPIC, newMode.toUpperCase());
   };
@@ -230,7 +238,7 @@ const DashboardClient = () => {
   return (
     <>
       <div className="mb-6 mt-4 flex justify-end items-center">
-        <button onClick={handleModeChange} className="flex items-center justify-center space-x-3 px-4 py-2 rounded-lg text-sm font-semibold transition-colors bg-gray-200 hover:bg-gray-300 text-gray-800">
+        <button onClick={handleModeChange} disabled={isGuest} className="flex items-center justify-center space-x-3 px-4 py-2 rounded-lg text-sm font-semibold transition-colors bg-gray-200 hover:bg-gray-300 text-gray-800">
             {controlMode === 'auto' ? <Bot className="text-cyan-600"/> : <User className="text-green-600"/>}
             <span>Mode: <span className="font-bold uppercase">{controlMode}</span></span>
         </button>
@@ -247,19 +255,25 @@ const DashboardClient = () => {
       </div>
 
       {/* Grid untuk Kontrol */}
-      <div className={`bg-white p-4 sm:p-6 mb-6 rounded-lg shadow-md transition-opacity ${!isManualMode ? 'opacity-60 cursor-not-allowed' : ''}`}>
+      <div className={`bg-white p-4 sm:p-6 mb-6 rounded-lg shadow-md transition-opacity ${!isManualMode || isGuest ? 'opacity-60 cursor-not-allowed' : ''}`}>
         <h3 className="text-xl font-semibold mb-4 text-slate-800">Kontrol Manual</h3>
+        {isGuest && (
+          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 mb-4 rounded-md" role="alert">
+            <p className="font-bold">Mode Tampilan (Read-Only)</p>
+            <p>Anda login sebagai Guest. Semua kontrol dinonaktifkan.</p>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 gap-4">
-          <ActuatorButton label="Kipas Exhaust" icon={Fan} status={relayAIN1Status} onToggle={() => handleActuatorToggle('relayAIN1', relayAIN1Status)} disabled={!isManualMode} color="amber" />
+          <ActuatorButton label="Kipas Exhaust" icon={Fan} status={relayAIN1Status} onToggle={() => handleActuatorToggle('relayAIN1', relayAIN1Status)} disabled={!isManualMode || isGuest} color="amber" />
           {/* <ActuatorButton label="Kipas Indoor" icon={Fan} status={relayAIN2Status} onToggle={() => handleActuatorToggle('relayAIN2', relayAIN2Status)} disabled={!isManualMode} color="green" /> */}
-          <ActuatorButton label="Pompa Pendorong" icon={Cable} status={relayAIN3Status} onToggle={() => handleActuatorToggle('relayAIN3', relayAIN3Status)} disabled={!isManualMode} color="cyan" />
+          <ActuatorButton label="Pompa Pendorong" icon={Cable} status={relayAIN3Status} onToggle={() => handleActuatorToggle('relayAIN3', relayAIN3Status)} disabled={!isManualMode || isGuest} color="cyan" />
           {/* <ActuatorButton label="Relay A" icon={RefreshCw} status={relayAIN4Status} onToggle={() => handleActuatorToggle('relayAIN4', relayAIN4Status)} disabled={!isManualMode} color="indigo" /> */}
-          <ActuatorButton label="Misting" icon={Bubbles} status={relayBIN1Status} onToggle={() => handleActuatorToggle('relayBIN1', relayBIN1Status)} disabled={!isManualMode} color="fuchsia" />
+          <ActuatorButton label="Misting" icon={Bubbles} status={relayBIN1Status} onToggle={() => handleActuatorToggle('relayBIN1', relayBIN1Status)} disabled={!isManualMode || isGuest} color="fuchsia" />
           {/* <ActuatorButton label="Misting B" icon={Bubbles} status={relayBIN2Status} onToggle={() => handleActuatorToggle('relayBIN2', relayBIN2Status)} disabled={!isManualMode} color="purple" /> */}
-          <ActuatorButton label="Sprinkler" icon={Droplets} status={relayBIN3Status} onToggle={() => handleActuatorToggle('relayBIN3', relayBIN3Status)} disabled={!isManualMode} color="emerald" />
+          <ActuatorButton label="Sprinkler" icon={Droplets} status={relayBIN3Status} onToggle={() => handleActuatorToggle('relayBIN3', relayBIN3Status)} disabled={!isManualMode || isGuest} color="emerald" />
           {/* <ActuatorButton label="Sprinkler B" icon={Droplets} status={relayBIN4Status} onToggle={() => handleActuatorToggle('relayBIN4', relayBIN4Status)} disabled={!isManualMode} color="sky" /> */}
         </div>
-          {!isManualMode && <p className="text-center text-xs text-amber-600 mt-4">Kontrol manual dinonaktifkan pada Mode Otomatis.</p>}
+          {!isManualMode && !isGuest && <p className="text-center text-xs text-amber-600 mt-4">Kontrol manual dinonaktifkan pada Mode Otomatis.</p>}
       </div>
 
       {/* Grid untuk Chart */}

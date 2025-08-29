@@ -3,10 +3,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { LogOut, ChevronDown } from 'lucide-react';
 import { logout } from '@veap/app/login/actions';
+import { useUser } from '@veap/app/components/UserProvider';
 
-export default function UserDropdown({ userEmail }: { userEmail: string | undefined }) {
+export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { user, profile, isLoading } = useUser();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -20,10 +23,16 @@ export default function UserDropdown({ userEmail }: { userEmail: string | undefi
     };
   }, []);
 
+  const displayRole = profile?.role
+    ? profile.role.replace('_', ' ').replace(/\b\w/g, char => char.toUpperCase())
+    : 'Loading...';
+
+  const userEmail = user?.email;
+
   return (
     <div className="relative" ref={dropdownRef}>
-      <button onClick={() => setIsOpen(!isOpen)} className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none">
-        <span>Admin</span>
+      <button onClick={() => setIsOpen(!isOpen)} disabled={isLoading} className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none">
+        <span>{displayRole}</span>
         <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 

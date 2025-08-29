@@ -5,8 +5,15 @@ import { Home, SlidersHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-export function DockNavigation() {
+type DockNavigationProps = {
+  role: 'super_admin' | 'admin' | 'guest';
+};
+
+export function DockNavigation({ role }: DockNavigationProps) {
   const router = useRouter();
+
+  // Buat variabel boolean untuk mempermudah pengecekan
+  const isGuest = role === 'guest';
 
   return (
     <div className="fixed bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-20">
@@ -14,9 +21,12 @@ export function DockNavigation() {
         <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/indoor-hidroponic')}>
           <Home className="h-5 w-5" />
         </DockIcon>
-        <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/indoor-hidroponic/settings')}>
-          <SlidersHorizontal className="h-5 w-5" />
-        </DockIcon>
+
+        {!isGuest && (
+          <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/indoor-hidroponic/settings')}>
+            <SlidersHorizontal className="h-5 w-5" />
+          </DockIcon>
+        )}
       </Dock>
     </div>
   );

@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowLeft, Leaf, LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
-import { login } from './actions';
+import { login, guestLogin } from './actions';
 import { AuroraText } from '@veap/components/magicui/aurora-text';
 
 function LoginButton() {
@@ -20,6 +20,20 @@ function LoginButton() {
     >
       {pending && <LoaderCircle className="animate-spin" />}
       {pending ? 'Logging in...' : 'Login'}
+    </button>
+  );
+}
+
+function GuestLoginButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full bg-gray-600 text-white font-bold py-3 px-4 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300"
+    >
+      {pending && <LoaderCircle className="animate-spin" />}
+      {pending ? 'Entering...' : 'Login as Guest'}
     </button>
   );
 }
@@ -87,6 +101,17 @@ function LoginComponent() {
         <div>
           <LoginButton />
         </div>
+      </form>
+
+      <div className="mt-6 flex items-center">
+        <div className="flex-grow border-t border-gray-300"></div>
+        <span className="mx-4 text-sm text-gray-500">OR</span>
+        <div className="flex-grow border-t border-gray-300"></div>
+      </div>
+
+      <form action={guestLogin} className="mt-6">
+        <input type="hidden" name="dashboard" value={dashboard} />
+        <GuestLoginButton />
       </form>
     </div>
   )
