@@ -144,7 +144,7 @@ const DashboardClient = () => {
         } catch (e) {
           console.error("Gagal parse data sensor:", e);
         }
-      } else if (topic === MODE_STATUS_TOPIC) {
+      } else if (topic === MODE_STATUS_TOPIC) { // statusrelay
         setControlMode(payload.toLowerCase() as ControlMode);
       } else if (topic === actuatorTopics.relayAIN1.status) {
         setRelayAIN1Status(payload === 'ON');
