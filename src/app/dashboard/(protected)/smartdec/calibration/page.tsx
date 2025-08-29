@@ -1,8 +1,26 @@
 // src/app/dashboard/(protected)/smartdec/kalibrasi/page.tsx
 import CalibrationClient from './components/client';
 import { DockNavigation } from '../components/dock';
+import { createClient } from '@veap/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
-export default function CalibrationPage() {
+export default async function CalibrationPage() {
+  const supabase = await createClient();
+  
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+      return redirect('/dashboard'); 
+  }
+
+  const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+  const userRole = profile?.role || 'guest';
+
   return (
     <div className="relative pb-24">
       <div className="mb-6">
@@ -14,7 +32,7 @@ export default function CalibrationPage() {
       
       <CalibrationClient />
 
-      <DockNavigation />
+      <DockNavigation role={userRole} />
     </div>
   );
 }
