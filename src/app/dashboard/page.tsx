@@ -100,8 +100,15 @@ export default async function DashboardPortalPage() {
       description: "Micro-environment control for efficient indoor hydroponic vegetable cultivation.",
       href: isLoggedIn ? "/dashboard/indoor-hidroponic" : "/login?dashboard=indoor-hidroponic"
     },
+    {
+      imageSrc: "/images/green-pyramid-dash.png",
+      icon: <Sprout className="h-8 w-8 text-green-700" />,
+      title: "Suryo Farm",
+      description: "University research greenhouse monitoring for tropical plants and conservation.",
+      href: isLoggedIn ? "/dashboard/suryo-farm" : "/login?dashboard=suryo-farm"
+    },
   ];
-
+  
   return (
     <div className="bg-gray-50 min-h-screen">
       <PortalHeader />
