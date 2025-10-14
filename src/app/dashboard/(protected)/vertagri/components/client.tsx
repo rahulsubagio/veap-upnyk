@@ -227,12 +227,12 @@ const DashboardClient = ({ role }: DashboardClientProps) => {
 
       {/* Grid untuk Sensor */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
-        <SensorCard icon={FlaskConical} label="pH Air" value={sensorData.ph?.toFixed(2) ?? '...'} unit="" color="text-green-500" />
         <SensorCard icon={Thermometer} label="Suhu Air" value={sensorData.water_temp?.toFixed(1) ?? '...'} unit="°C" color="text-blue-500" />
-        <SensorCard icon={Waves} label="TDS" value={sensorData.tds?.toFixed(0) ?? '...'} unit="ppm" color="text-purple-500" />
-        <SensorCard icon={Zap} label="EC" value={sensorData.ec?.toFixed(0) ?? '...'} unit="µS/cm" color="text-yellow-500" />
         <SensorCard icon={Thermometer} label="Suhu Ruang" value={sensorData.room_temp?.toFixed(1) ?? '...'} unit="°C" color="text-red-500" />
         <SensorCard icon={Droplets} label="Kelembapan" value={sensorData.humidity?.toFixed(1) ?? '...'} unit="%" color="text-cyan-500" />
+        <SensorCard icon={FlaskConical} label="pH Air" value={sensorData.ph?.toFixed(2) ?? '...'} unit="" color="text-green-500" />
+        <SensorCard icon={Waves} label="TDS" value={sensorData.tds?.toFixed(0) ?? '...'} unit="ppm" color="text-purple-500" />
+        <SensorCard icon={Zap} label="EC" value={sensorData.ec?.toFixed(0) ?? '...'} unit="µS/cm" color="text-yellow-500" />
       </div>
 
       {/* Grid untuk Kontrol */}

@@ -18,12 +18,12 @@ export function DockNavigation({ role }: DockNavigationProps) {
   return (
     <div className="fixed bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-20">
       <Dock direction="middle" className="rounded-full bg-white">
-        <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/suryo-farm')}>
+        <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/vertagri')}>
           <Home className="h-5 w-5" />
         </DockIcon>
 
         {!isGuest && (
-          <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/suryo-farm/settings')}>
+          <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/vertagri/settings')}>
             <SlidersHorizontal className="h-5 w-5" />
           </DockIcon>
         )}

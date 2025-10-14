@@ -3,7 +3,7 @@ import { DockNavigation } from '../components/dock';
 import { createClient } from '@veap/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
-export default async function HidroponikControlPage() {
+export default async function VertagriControlPage() {
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();

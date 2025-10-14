@@ -1,5 +1,5 @@
 import { 
-    Sprout, Briefcase, Building, ArrowRight, ArrowLeft, Leaf
+    Sprout, Briefcase, Building, ArrowRight, ArrowLeft, Leaf, Apple
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -102,10 +102,10 @@ export default async function DashboardPortalPage() {
     },
     {
       imageSrc: "/images/green-pyramid-dash.png",
-      icon: <Sprout className="h-8 w-8 text-green-700" />,
-      title: "Suryo Farm",
-      description: "University research greenhouse monitoring for tropical plants and conservation.",
-      href: isLoggedIn ? "/dashboard/suryo-farm" : "/login?dashboard=suryo-farm"
+      icon: <Apple className="h-8 w-8 text-cyan-700" />,
+      title: "Vertagri",
+      description: "Veteran Smart Agriculture for urban farming and educational purposes.",
+      href: isLoggedIn ? "/dashboard/vertagri" : "/login?dashboard=vertagri"
     },
   ];
   

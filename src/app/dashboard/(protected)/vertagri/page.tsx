@@ -3,7 +3,7 @@ import { DockNavigation } from './components/dock';
 import { createClient } from '@veap/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
-export default async function SuryoFarmDashboardPage() {
+export default async function VertagriDashboardPage() {
   // const initialData = await getInitialSensorData();
 
   const supabase = await createClient();
@@ -27,7 +27,7 @@ export default async function SuryoFarmDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-xl md:text-3xl text-center font-bold text-gray-800">Suryo Farm Dashboard</h1>
+      <h1 className="text-xl md:text-3xl text-center font-bold text-gray-800">Vertagri Dashboard</h1>
       {/* <p className="text-center text-gray-600 mt-2">Role Anda: <span className="font-semibold capitalize text-blue-800">{userRole.replace('_', ' ')}</span></p> */}
       <DashboardClient role={userRole} />
       <DockNavigation role={userRole} />

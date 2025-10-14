@@ -10,8 +10,10 @@ const SettingsClient = () => {
   const [lowPhThreshold, setLowPhThreshold] = useState('');
   const [highPhThreshold, setHighPhThreshold] = useState('');
   const [volumeABMix, setVolumeABMix] = useState('');
+  const [volumePHUp, setVolumePHUp] = useState('');
   const [volumePHDown, setVolumePHDown] = useState('');
   const [interval_siklusABMix, setInterval_siklusABMix] = useState('');
+  const [interval_siklusPHUp, setInterval_siklusPHUp] = useState('');
   const [interval_siklusPHDown, setInterval_siklusPHDown] = useState('');
   const [client, setClient] = useState<mqtt.MqttClient | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -69,8 +71,10 @@ const SettingsClient = () => {
           setLowPhThreshold(settings.lowph_threshold?.toString() ?? '');
           setHighPhThreshold(settings.highph_threshold?.toString() ?? '');
           setVolumeABMix(settings.volume_ABMix?.toString() ?? '');
+          setVolumePHUp(settings.volume_PHUp?.toString() ?? '');
           setVolumePHDown(settings.volume_PHDown?.toString() ?? '');
           setInterval_siklusABMix(settings.interval_ABMix?.toString() ?? '');
+          setInterval_siklusPHUp(settings.interval_PHUp?.toString() ?? '');
           setInterval_siklusPHDown(settings.interval_PHDown?.toString() ?? '');
 
           console.log("Pengaturan diterima dari ESP32:", settings);
@@ -109,8 +113,10 @@ const SettingsClient = () => {
         lowph_threshold: parseFloat(lowPhThreshold),
         highph_threshold: parseFloat(highPhThreshold),
         volume_ABMix: parseInt(volumeABMix, 10),
+        volume_PHUp: parseInt(volumePHUp, 10),
         volume_PHDown: parseInt(volumePHDown, 10),
         interval_ABMix: parseInt(interval_siklusABMix, 10),
+        interval_PHUp: parseInt(interval_siklusPHUp, 10),
         interval_PHDown: parseInt(interval_siklusPHDown, 10),
       };
 
@@ -181,6 +187,19 @@ const SettingsClient = () => {
                     <p className="text-xs text-gray-500 mt-1">Pompa pH Up akan nyala.</p>
                 </div>
                 <div>
+                    <label htmlFor="tds" className="block text-sm font-medium text-gray-700 mb-2">Output (ml)</label>
+                    <input type="number" id="tds" value={volumePHUp} onChange={(e) => setVolumePHUp(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
+                    <p className="text-xs text-gray-500 mt-1">Output nutrisi per mili liter (ml).</p>
+                </div>
+                <div>
+                    <label htmlFor="tds" className="block text-sm font-medium text-gray-700 mb-2">Durasi Interval (ms)</label>
+                    <input type="number" id="tds" value={interval_siklusPHUp} onChange={(e) => setInterval_siklusPHUp(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
+                    <p className="text-xs text-gray-500 mt-1">Durasi interval / jeda per mili second (ms).</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 mt-6 md:grid-cols-3 gap-4">
+                <div>
                     <label htmlFor="highph" className="block text-sm font-medium text-gray-700 mb-2">Ambang Batas pH Tinggi</label>
                     <input type="number" step="0.1" id="highph" value={highPhThreshold} onChange={(e) => setHighPhThreshold(e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-cyan-500 focus:border-cyan-500" />
                     <p className="text-xs text-gray-500 mt-1">Pompa pH Down akan nyala.</p>
@@ -196,6 +215,7 @@ const SettingsClient = () => {
                     <p className="text-xs text-gray-500 mt-1">Durasi interval / jeda per mili second (ms).</p>
                 </div>
               </div>
+
             </div>
           </div>
 
