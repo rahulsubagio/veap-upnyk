@@ -22,7 +22,7 @@ export default async function VertagriControlPage() {
 
     return (
         <div>
-            <h1 className="text-xl md:text-3xl font-bold text-center text-gray-800">Suryo Farm Settings</h1>
+            <h1 className="text-xl md:text-3xl font-bold text-center text-gray-800">Vertagri Settings</h1>
             <ControlClient />
             <DockNavigation  role={userRole} />
         </div>
