@@ -96,9 +96,9 @@ export default async function DashboardPortalPage() {
     {
       imageSrc: "/images/hidroponik-indoor-dash.png",
       icon: <Building className="h-8 w-8 text-purple-700" />,
-      title: "Indoor Hidroponic",
+      title: "Indoor Hydroponic",
       description: "Micro-environment control for efficient indoor hydroponic vegetable cultivation.",
-      href: isLoggedIn ? "/dashboard/indoor-hidroponic" : "/login?dashboard=indoor-hidroponic"
+      href: isLoggedIn ? "/dashboard/indoor-hydroponic" : "/login?dashboard=indoor-hydroponic"
     },
     {
       imageSrc: "/images/green-pyramid-dash.png",

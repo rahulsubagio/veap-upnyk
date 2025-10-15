@@ -22,7 +22,7 @@ export default async function HidroponikControlPage() {
 
     return (
         <div>
-            <h1 className="text-xl md:text-3xl font-bold text-center text-gray-800">Indoor Hidroponic Settings</h1>
+            <h1 className="text-xl md:text-3xl font-bold text-center text-gray-800">Indoor Hydroponic Settings</h1>
             <ControlClient />
             <DockNavigation  role={userRole} />
         </div>

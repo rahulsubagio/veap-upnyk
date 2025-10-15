@@ -27,7 +27,7 @@ export default async function HidroponikIndoorDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-xl md:text-3xl text-center font-bold text-gray-800">Indoor Hidroponic Dashboard</h1>
+      <h1 className="text-xl md:text-3xl text-center font-bold text-gray-800">Indoor Hydroponic Dashboard</h1>
       {/* <p className="text-center text-gray-600 mt-2">Role Anda: <span className="font-semibold capitalize text-blue-800">{userRole.replace('_', ' ')}</span></p> */}
       <DashboardClient role={userRole} />
       <DockNavigation role={userRole} />

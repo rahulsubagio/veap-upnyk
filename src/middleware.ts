@@ -66,11 +66,11 @@ export async function middleware(req: NextRequest) {
 
     // C. Jika role adalah 'admin', cegah akses ke dashboard lain via URL
     if (role === 'admin' && !pathname.startsWith(`/dashboard/${dashboard_access}`)) {
-      // Cek agar tidak redirect dari halaman portal utama
-      if (pathname !== '/dashboard') {
-        return NextResponse.redirect(new URL(`/dashboard/${dashboard_access}`, req.url));
-      }
-    }
+      // Cek agar tidak redirect dari halaman portal utama
+      if (pathname !== '/dashboard') {
+        return NextResponse.redirect(new URL(`/dashboard/${dashboard_access}`, req.url));
+      }
+    }
     
     // D. Jika role adalah 'guest', cegah akses ke halaman setting
     if (role === 'guest' && pathname.includes('/settings')) {

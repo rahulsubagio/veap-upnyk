@@ -47,7 +47,8 @@ function LoginComponent() {
   const dashboardTitles: { [key: string]: string } = {
       'green-pyramid': 'Green Pyramid',
       'smartdec': 'Smartdec',
-      'indoor-hidroponic': 'Indoor Hidroponic'
+      'indoor-hydroponic': 'Indoor Hydroponic',
+      'vertagri': 'Vertagri',
   };
 
   // Show an error message if the user accesses /login without a parameter
