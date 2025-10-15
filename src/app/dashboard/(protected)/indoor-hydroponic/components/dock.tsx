@@ -1,7 +1,7 @@
 "use client";
 
 import { Dock, DockIcon } from "@veap/components/magicui/dock";
-import { Home, SlidersHorizontal } from "lucide-react";
+import { Home, SlidersHorizontal, Database } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -25,6 +25,12 @@ export function DockNavigation({ role }: DockNavigationProps) {
         {!isGuest && (
           <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/indoor-hydroponic/settings')}>
             <SlidersHorizontal className="h-5 w-5" />
+          </DockIcon>
+        )}
+        
+        {!isGuest && (
+          <DockIcon className="bg-gray-200" onClick={() => router.push('/dashboard/indoor-hydroponic/data')}>
+            <Database className="h-5 w-5" />
           </DockIcon>
         )}
       </Dock>
